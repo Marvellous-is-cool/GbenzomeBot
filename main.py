@@ -682,6 +682,7 @@ class Bot(BaseBot):
       await self.place_bot()
     self.bot_status = True
     await self.highrise.chat("Is the party started!!?")
+    print("Started....")
 
   # Return the top 10 tippers
   def get_top_tippers(self):
