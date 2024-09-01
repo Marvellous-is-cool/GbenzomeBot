@@ -4,3 +4,4 @@ __pycache__/
 .upm/
 netlify.toml
 venv/
+.env
