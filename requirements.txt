@@ -10,6 +10,7 @@ colorama==0.4.6 ; python_version >= "3.10" and python_version < "3.12" and platf
 exceptiongroup==1.1.3 ; python_version >= "3.10" and python_version < "3.12"
 flask==3.0.0 ; python_full_version >= "3.10.0" and python_version < "3.12"
 frozenlist==1.4.0 ; python_version >= "3.10" and python_version < "3.12"
+gunicorn ; python_version >= "3.10" and python_version < "3.12"
 highrise-bot-sdk==24.1.0 ; python_version >= "3.10" and python_version < "3.12"
 idna==3.4 ; python_version >= "3.10" and python_version < "3.12"
 itsdangerous==2.1.2 ; python_full_version >= "3.10.0" and python_version < "3.12"
