@@ -13,16 +13,24 @@ port = int(os.getenv('PORT', 8080))  # Default to 8080 if not set
 room_id = os.getenv('ROOM_ID')
 bot_token = os.getenv('BOT_TOKEN')
 
-app = Flask(__name__)
+# Flask web server setup
+class WebServer:
+    def __init__(self):
+        self.app = Flask(__name__)
 
-@app.route('/')
-def index() -> str:
-    return "Alive"
+        @self.app.route('/')
+        def index() -> str:
+            return "Alive"
 
-def run_flask():
-    app.run(host='0.0.0.0', port=port)
+    def run(self) -> None:
+        self.app.run(host='0.0.0.0', port=port)
 
-class RunBot():
+    def keep_alive(self):
+        t = Thread(target=self.run)
+        t.start()
+
+# Bot setup and loop
+class RunBot:
     def __init__(self) -> None:
         self.room_id = room_id
         self.bot_token = bot_token
@@ -42,10 +50,13 @@ class RunBot():
                 print("Error: ", e)
                 time.sleep(5)
 
-if __name__ == "__main__":
-    # Start Flask app in a separate thread
-    thread = Thread(target=run_flask)
-    thread.start()
+# Gunicorn entry point
+def create_app():
+    return WebServer().app
 
-    # Run bot loop
+if __name__ == "__main__":
+    # Start the Flask web server in a separate thread
+    WebServer().keep_alive()
+
+    # Run the bot loop
     RunBot().run_loop()
