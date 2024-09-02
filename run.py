@@ -14,20 +14,20 @@ room_id = os.getenv('ROOM_ID')
 bot_token = os.getenv('BOT_TOKEN')
 
 # Flask web server setup
-class WebServer:
-    def __init__(self):
-        self.app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
 
-        @self.app.route('/')
-        def index() -> str:
-            return "Alive"
+    @app.route('/')
+    def index() -> str:
+        return "Alive"
 
-    def run(self) -> None:
-        self.app.run(host='0.0.0.0', port=port)
+    return app
 
-    def keep_alive(self):
-        t = Thread(target=self.run)
-        t.start()
+# Create the app instance
+app = create_app()
+
+def run_flask():
+    app.run(host='0.0.0.0', port=port)
 
 # Bot setup and loop
 class RunBot:
@@ -50,13 +50,10 @@ class RunBot:
                 print("Error: ", e)
                 time.sleep(5)
 
-# Gunicorn entry point
-def create_app():
-    return WebServer().app
-
 if __name__ == "__main__":
     # Start the Flask web server in a separate thread
-    WebServer().keep_alive()
+    thread = Thread(target=run_flask)
+    thread.start()
 
     # Run the bot loop
     RunBot().run_loop()
