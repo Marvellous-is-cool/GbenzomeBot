@@ -606,18 +606,15 @@ class Bot(BaseBot):
     parts = message.split(" ")
     command = parts[0][1:]
     functions_folder = "functions"
-    extended_folder = "python_weather"
     # Check if the function exists in the module
-    for file_name in os.listdir(functions_folder) + os.listdir(
-        extended_folder):
+    for file_name in os.listdir(functions_folder):
       if file_name.endswith(".py"):
         module_path = None
         module_name = file_name[:-3]  # Remove the '.py' extension
 
         if os.path.isfile(os.path.join(functions_folder, file_name)):
           module_path = os.path.join(functions_folder, file_name)
-        elif os.path.isfile(os.path.join(extended_folder, file_name)):
-          module_path = os.path.join(extended_folder, file_name)
+        
 
         if module_path:
           try:

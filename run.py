@@ -4,6 +4,7 @@ from highrise.__main__ import *
 import time
 import os
 from dotenv import load_dotenv
+import traceback
 
 # Load environment variables from .env file
 load_dotenv()
@@ -23,6 +24,7 @@ class WebServer():
   def keep_alive(self):
     t = Thread(target=self.run)
     t.start()
+    RunBot().run_loop()
 
 
 class RunBot():
@@ -45,9 +47,9 @@ class RunBot():
 
       except Exception as e:
         print("Error: ", e)
+        traceback.print_exc()
         time.sleep(5)
 
 
 if __name__ == "__main__":
   WebServer().keep_alive()
-  RunBot().run_loop()
