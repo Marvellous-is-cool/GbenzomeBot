@@ -27,11 +27,13 @@ def create_app():
 app = create_app()
 
 def run_flask():
+    print("Starting Flask server...")
     app.run(host='0.0.0.0', port=port)
 
 # Bot setup and loop
 class RunBot:
     def __init__(self) -> None:
+        print("Initializing bot...")
         self.room_id = room_id
         self.bot_token = bot_token
         self.bot_file = "main"
@@ -43,6 +45,7 @@ class RunBot:
         ]
 
     def run_loop(self) -> None:
+        print("Running bot loop...")
         while True:
             try:
                 arun(main(self.definitions))
