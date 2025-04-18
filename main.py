@@ -200,10 +200,9 @@ class Bot(BaseBot):
         await self.highrise.moderate_room(user_id, "kick")
       except Exception as e:
         await self.highrise.chat(f"{e}")
-        return
         #send message to chat
-        await self.highrise.chat(f"{username} has been kicked out of the room."
-                                 )
+        return
+      await self.highrise.chat(f"{username} has been kicked out of the room.")
 
     if lowerMsg.startswith("!loop"):
       try:
@@ -697,7 +696,7 @@ class Bot(BaseBot):
         f"Welcome boss! The coolestkid reporting here..... I am your special bot made by you. We have gathered here today to play what? BINGO!!!!!!!!!!!!!")
     
     
-    if user.username == "User_taken2":
+    elif user.username == "User_taken2":
       await self.highrise.react("wave", user.id)
       await self.highrise.chat(
         f"Wow! It's the beauty's arrival! I'm jealous, Coolbuoy. Welcome, Beauty!")
