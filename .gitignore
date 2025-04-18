@@ -1,8 +1,23 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
-.cache/
-.pythonlibs/
-.upm/
-netlify.toml
+*.py[cod]
+*$py.class
+
+# Virtual environment
 venv/
+env/
+.bot_venv/
+bot_venv/
+.bot_env/
+*.egg-info/
+
+# Env files
 .env
-runcopy.py
+
+# MacOS junk
+.DS_Store
+
+# VSCode and editor configs
+.vscode/
+.idea/
+*.swp
