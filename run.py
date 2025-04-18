@@ -1,3 +1,8 @@
+# You can run main.py directly for development:
+#   python main.py
+# This will start the bot without the Flask keep-alive server.
+# For production or Replit-style keep-alive, use this run.py file.
+
 from flask import Flask
 from threading import Thread
 from highrise.__main__ import *
@@ -18,8 +23,13 @@ class WebServer():
       return "Alive"
 
   def run(self) -> None:
-    port = int(os.getenv('PORT', 8080))  # Default to 8080 if not set
-    self.app.run(host='0.0.0.0', port=port)
+    port = int(os.getenv('PORT', 8081))  # Default to 8080 if not set
+    self.app.run(
+      host='0.0.0.0',
+      port=port,
+      debug=False,         # Disable debug mode in thread
+      use_reloader=False   # Disable reloader in thread
+    )
 
   def keep_alive(self):
     t = Thread(target=self.run)
@@ -29,8 +39,8 @@ class WebServer():
 
 class RunBot():
   def __init__(self) -> None:
-    self.room_id = os.getenv('ROOM_ID')
-    self.bot_token = os.getenv('BOT_TOKEN')
+    self.room_id = os.getenv('ROOM_ID', 'default_room_id')  # Provide a default value
+    self.bot_token = os.getenv('BOT_TOKEN', 'default_bot_token')  # Provide a default value
     self.bot_file = "main"
     self.bot_class = "Bot"
 

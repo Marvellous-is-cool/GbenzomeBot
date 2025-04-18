@@ -1,9 +1,3 @@
-### FILL IN YOUR ROOM ID & API KEY HERE
-# room_id = "6529060e1e8a5b090db8934b"
-# api_key  = "479ea14cd5d4f028845d29023ebe477a10d807825366304085db223118ac388e"
-room_id = "6511764d0d50a790c3336332"
-api_key = "d52c8f3bf8f5b76afa59ea0fdf316142c6bfedde260a60ff21073314ab4fb1a3"
-
 from highrise import BaseBot, __main__, CurrencyItem, Item, Position, AnchorPosition, SessionMetadata, User
 from highrise.__main__ import BotDefinition
 from asyncio import run as arun
@@ -12,10 +6,10 @@ import asyncio
 import os
 from highrise.models import *
 from highrise.webapi import *
-from highrise.models_webapi import *
 import importlib.util
 from loop_emote import send_specific_emote_periodically, stop_emote_task
 from getItems import getclothes, getCommands
+from functions.play import play, end
 # from webserver import keep_alive
 
 emotesava = [
@@ -68,14 +62,28 @@ class Bot(BaseBot):
     self.bot_id = None
     self.owner_id = None
     self.bot_status = False
-    self.tip_data = None
+    self.tip_data = {}
     self.load_tip_data()
     self.bot_position = None
+    self.dice_interval = 3  # default
+    self.dice_task = None
+
 
   async def on_chat(self, user: User, message: str) -> None:
     response = await self.command_handler(user.id, message)
+    if response:
+        await self.highrise.chat("Room users fetched successfully.")
     lowerMsg = message.lower()
-    roomUsers = (await self.highrise.get_room_users()).content
+    response = await self.highrise.get_room_users()
+    if hasattr(response, 'content'):
+        if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
+            roomUsers = response.content
+        else:
+            await self.highrise.chat("Failed to fetch room users.")
+            return
+    else:
+        await self.highrise.chat("Failed to fetch room users.")
+        return
 
     if lowerMsg.startswith("!door"):
       await self.highrise.teleport(user_id=user.id,
@@ -117,59 +125,48 @@ class Bot(BaseBot):
         await self.highrise.chat(
             f"{username} has been added to one of the vips")
 
+    # --- Improved VIP teleport logic ---
     if lowerMsg.startswith("!teleport"):
-      for vips in vip_users:
-        if user.id == self.owner_id or user.username == vips or user.username == "coolbuoy":
-          #separates the message into parts
-          #part 1 is the command "/teleport"
-          #part 2 is the name of the user to teleport to (if it exists)
-          #part 3 is the coordinates to teleport to (if it exists)
-          try:
-            command, username, coordinate = lowerMsg.split(" ")
-          except:
-            await self.highrise.chat(
-                "Incorrect format, please use !teleport <username> <x,y,z>")
-            return
-
-          #checks if the user is in the room
-          room_users = (await self.highrise.get_room_users()).content
-          for user in room_users:
-            if user[0].username.lower() == username.lower():
-              user_id = user[0].id
-              break
-          #if the user_id isn't defined, the user isn't in the room
-          if "user_id" not in locals():
-            await self.highrise.chat(
-                "User not found, please specify a valid user and coordinate")
-            return
-
-          #checks if the coordinate is in the correct format (x,y,z)
-          try:
-            x, y, z = coordinate.split(",")
-          except:
-            await self.highrise.chat(
-                "Coordinate not found or incorrect format, use x,y,z")
-            return
-
-          #teleports the user to the specified coordinate
-          await self.highrise.teleport(user_id=user.id,
-                                       dest=Position(float(x), float(y),
-                                                     float(z)))
-
-        else:
-          await self.highrise.chat(
-              f"You are not a VIP. Only VIPs are authorized to use the teleporter."
-          )
+      is_vip = user.id == self.owner_id or user.username == "coolbuoy" or user.username in vip_users
+      if not is_vip:
+        await self.highrise.chat(
+            f"You are not a VIP. Only VIPs are authorized to use the teleporter."
+        )
+        return
+      try:
+        command, username, coordinate = lowerMsg.split(" ")
+      except:
+        await self.highrise.chat(
+            "Incorrect format, please use !teleport <username> <x,y,z>")
+        return
+      response = await self.highrise.get_room_users()
+      if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
+        room_users = response.content
+      else:
+        await self.highrise.chat("Failed to fetch room users.")
+        return
+      user_id = None
+      for room_user, pos in room_users:
+        if room_user.username.lower() == username.lower():
+          user_id = room_user.id
+          break
+      if user_id is None:
+        await self.highrise.chat(
+            "User not found, please specify a valid user and coordinate")
+        return
+      try:
+        x, y, z = coordinate.split(",")
+      except:
+        await self.highrise.chat(
+            "Coordinate not found or incorrect format, use x,y,z")
+        return
+      await self.highrise.teleport(user_id=user_id,
+                                   dest=Position(float(x), float(y),
+                                                 float(z)))
 
     if message.startswith("kick"):
       if user.username != "coolbuoy":
         await self.highrise.chat("You do not have permission to do this")
-        return
-      if user.username == "coolbuoy":
-        pass
-      else:
-        await self.highrise.chat(
-            "You do not have permission to use this command.")
         return
       #separete message into parts
       parts = message.split()
@@ -183,12 +180,18 @@ class Bot(BaseBot):
       else:
         username = parts[1][1:]
       #check if user is in room
-      room_users = (await self.highrise.get_room_users()).content
+      response = await self.highrise.get_room_users()
+      if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
+          room_users = response.content
+      else:
+          await self.highrise.chat("Failed to fetch room users.")
+          return
+      user_id = None
       for room_user, pos in room_users:
         if room_user.username.lower() == username.lower():
           user_id = room_user.id
           break
-      if "user_id" not in locals():
+      if user_id is None:
         await self.highrise.chat(
             "User not found, please specify a valid user and coordinate")
         return
@@ -220,7 +223,11 @@ class Bot(BaseBot):
 
     if message.lstrip().startswith(("!fight", "!hug", "!flirt")):
       response = await self.highrise.get_room_users()
-      users = [content[0] for content in response.content]
+      if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
+          users = [content[0] for content in response.content]
+      else:
+          await self.highrise.chat("Failed to fetch room users.")
+          return
       usernames = [user.username.lower() for user in users]
       parts = message[1:].split()
       args = parts[1:]
@@ -278,11 +285,13 @@ class Bot(BaseBot):
       except Exception as e:
         await self.highrise.chat(f"An Error Occured: {e}")
 
-    if response:
-      try:
-        await self.highrise.chat(response)
-      except Exception as e:
-        await self.highrise.chat(f"Chat Error: {e}")
+    # Add play/end command handling for owner
+    if lowerMsg.startswith("!play") and user.id == self.owner_id:
+        await play(self, user, message)
+        return
+    if lowerMsg.startswith("!end") and user.id == self.owner_id:
+        await end(self, user, message)
+        return
 
   async def on_emote(self, user: User, emote_id: str,
                      receiver: User | None) -> None:
@@ -299,9 +308,17 @@ class Bot(BaseBot):
   async def on_message(self, user_id: str, conversation_id: str,
                        is_new_conversation: bool) -> None:
     response = await self.highrise.get_messages(conversation_id)
+    message = ""  # Initialize message with a default value
     if isinstance(response, GetMessagesRequest.GetMessagesResponse):
       message = response.messages[0].content
+    user = None
     try:
+      # Fetch user object for permission checks
+      room_users_resp = await self.highrise.get_room_users()
+      if isinstance(room_users_resp, GetRoomUsersRequest.GetRoomUsersResponse):
+        user_tuple = next((u for u in room_users_resp.content if u[0].id == user_id), None)
+        if user_tuple:
+          user = user_tuple[0]
       if message.lower() == "!equip help" or message.lower() == "equip":
         if user_id == self.owner_id:
           await self.highrise.send_message(
@@ -309,9 +326,24 @@ class Bot(BaseBot):
         else:
           await self.highrise.send_message(
               conversation_id,
-              f"Sorry {user.username}, you don't have access to this command")
+              f"Sorry, you don't have access to this command")
 
       elif message.lower() == "eq h":
+        response = await self.highrise.get_room_users()
+        if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
+            user_tuple = next((u for u in response.content if u[0].id == user_id), None)
+            if user_tuple:
+              user = user_tuple[0]
+            else:
+              user = None
+        else:
+            await self.highrise.chat("Failed to fetch room users.")
+            user = None
+        if not user:
+          await self.highrise.send_message(
+              conversation_id,
+              "User information could not be retrieved.")
+          return
         if user_id == self.owner_id:
           await self.highrise.send_message(
               conversation_id,
@@ -551,9 +583,6 @@ class Bot(BaseBot):
             f"I can't understand your message, type help for further assistance.."
         )
 
-      if message.lower().startswith("!emo"):
-        await self.highrise.send_message(conversation_id, f"{msgallemo()}")
-
     except Exception as e:
       await self.highrise.send_message(
           conversation_id,
@@ -627,7 +656,7 @@ class Bot(BaseBot):
             # Check if the function exists in the module
             if hasattr(module, command) and callable(getattr(module, command)):
               function = getattr(module, command)
-              await function(self, User, message)
+              await function(self, user_id, message)
               return  # Exit the loop if a matching function is found
           except Exception as e:
             await self.highrise.chat(
@@ -662,9 +691,22 @@ class Bot(BaseBot):
 
   async def on_user_join(self, user: User,
                          position: Position | AnchorPosition) -> None:
-    await self.highrise.react("wave", user.id)
-    await self.highrise.chat(
-        f"🥳🥳🥳 WELCOME TO @dami.x.x BIRTHDAY/HALLOWEEN 🎃 PARTY TIME TO GET SPOOKY AND GROOVY \n\n TO GET TO THE VIP SECTION TIP 100 OR MORE TO GET TELEPORTED. YOU CAN SUPPORT THE HOST/CELEBRANT WITH TIPS EVERY TIPPS HELPS"
+    if user.username == "coolbuoy":
+      await self.highrise.react("wave", user.id)
+      await self.highrise.chat(
+        f"Welcome boss! The coolestkid reporting here..... I am your special bot made by you. We have gathered here today to play what? BINGO!!!!!!!!!!!!!")
+    
+    
+    if user.username == "User_taken2":
+      await self.highrise.react("wave", user.id)
+      await self.highrise.chat(
+        f"Wow! It's the beauty's arrival! I'm jealous, Coolbuoy. Welcome, Beauty!")
+      
+      # Else 
+    else:
+       await self.highrise.react("wave", user.id)
+       await self.highrise.chat(
+        f"Hiiii, welcome {user.username}, Please follow the arrow to the spike that will take you down to the game."
     )
 
   async def on_user_leave(self, user: User) -> None:
@@ -678,11 +720,14 @@ class Bot(BaseBot):
     if self.bot_status:
       await self.place_bot()
     self.bot_status = True
-    await self.highrise.chat("Is the party started!!?")
+    
+    await self.highrise.chat("What a good day be ACTIVE! haha 🤣")
     print("started...")
 
   # Return the top 10 tippers
   def get_top_tippers(self):
+    if not self.tip_data:
+        return []
     sorted_tippers = sorted(self.tip_data.items(),
                             key=lambda x: x[1]['total_tips'],
                             reverse=True)
@@ -711,7 +756,6 @@ class Bot(BaseBot):
   def write_tip_data(self, user: User, tip: int) -> None:
     with open("./data.json", "r+") as file:
       data = load(file)
-      file.seek(0)
       user_data = data["users"].get(user.id, {
           "total_tips": 0,
           "username": user.username
@@ -719,6 +763,7 @@ class Bot(BaseBot):
       user_data["total_tips"] += tip
       user_data["username"] = user.username
       data["users"][user.id] = user_data
+      file.seek(0)
       dump(data, file)
       file.truncate()
 
@@ -786,5 +831,15 @@ def data_file(filename: str, default_data: str = "{}") -> None:
 DEFAULT_DATA = '{"users": {}, "bot_position": {"x": 0, "y": 0, "z": 0, "facing": "FrontRight"}}'
 data_file("./data.json", DEFAULT_DATA)
 
+# To run the bot directly (without Flask keep-alive), use:
+#   python main.py
+# This is recommended for local development and debugging.
+
+# Uncomment below to enable direct execution:
 if __name__ == "__main__":
-  arun(Bot().run_bot(room_id, api_key))
+  import os
+  from dotenv import load_dotenv
+  load_dotenv()
+  ROOM_ID = os.getenv("ROOM_ID")
+  API_KEY = os.getenv("BOT_TOKEN")
+  arun(Bot().run_bot(ROOM_ID, API_KEY))

@@ -1,28 +1,28 @@
-aiohttp==3.8.6 ; python_version >= "3.10" and python_version < "3.12"
-aiosignal==1.3.1 ; python_version >= "3.10" and python_version < "3.12"
-async-timeout==4.0.3 ; python_version >= "3.10" and python_version < "3.12"
-attrs==23.1.0 ; python_version >= "3.10" and python_version < "3.12"
-blinker==1.6.3 ; python_full_version >= "3.10.0" and python_version < "3.12"
-cattrs==22.2.0 ; python_version >= "3.10" and python_version < "3.12"
-charset-normalizer==3.3.1 ; python_version >= "3.10" and python_version < "3.12"
-click==8.1.7 ; python_version >= "3.10" and python_version < "3.12"
-colorama==0.4.6 ; python_version >= "3.10" and python_version < "3.12" and platform_system == "Windows"
-exceptiongroup==1.1.3 ; python_version >= "3.10" and python_version < "3.12"
-flask==3.0.0 ; python_full_version >= "3.10.0" and python_version < "3.12"
-frozenlist==1.4.0 ; python_version >= "3.10" and python_version < "3.12"
-gunicorn ; python_version >= "3.10" and python_version < "3.12"
-highrise-bot-sdk==24.1.0 ; python_version >= "3.10" and python_version < "3.12"
-idna==3.4 ; python_version >= "3.10" and python_version < "3.12"
-itsdangerous==2.1.2 ; python_full_version >= "3.10.0" and python_version < "3.12"
-jinja2==3.1.2 ; python_full_version >= "3.10.0" and python_version < "3.12"
-markupsafe==2.1.3 ; python_full_version >= "3.10.0" and python_version < "3.12"
-multidict==6.0.4 ; python_version >= "3.10" and python_version < "3.12"
-pendulum==2.1.2 ; python_version >= "3.10" and python_version < "3.12"
-python-dateutil==2.8.2 ; python_version >= "3.10" and python_version < "3.12"
-python-dotenv ; python_version >= "3.10" and python_version < "3.12"
-pytzdata==2020.1 ; python_version >= "3.10" and python_version < "3.12"
-quattro==22.2.0 ; python_version >= "3.10" and python_version < "3.12"
-six==1.16.0 ; python_version >= "3.10" and python_version < "3.12"
-typing-extensions==3.10.0.2 ; python_version >= "3.10" and python_version < "3.12"
-werkzeug==3.0.1 ; python_full_version >= "3.10.0" and python_version < "3.12"
-yarl==1.9.2 ; python_version >= "3.10" and python_version < "3.12"
+aiohttp
+aiosignal
+async-timeout
+attrs
+blinker
+cattrs
+charset-normalizer
+click
+colorama
+exceptiongroup
+flask
+frozenlist
+gunicorn 
+highrise-bot-sdk 
+idna
+itsdangerous 
+jinja2 
+markupsafe 
+multidict 
+pendulum
+python-dateutil 
+python-dotenv 
+pytzdata 
+quattro 
+six
+typing-extensions 
+werkzeug 
+yarl 
