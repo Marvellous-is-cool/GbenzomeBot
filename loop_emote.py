@@ -69,13 +69,20 @@ emotesava = [
 "idle-uwu",
 "idle-dance-tiktok4"]
 
-async def send_specific_emote_periodically(self, user, emote_name):
+async def send_specific_emote_periodically(self, user, emote_name, target_user=None):
+    """
+    If target_user is None, loop emote for 'user'.
+    If target_user is provided, loop emote for 'target_user'.
+    """
     try:
+        # Determine the username for task tracking
+        task_user = target_user if target_user else user
+
         # Check if there's an existing task for the user and cancel it
-        existing_task = user_tasks.get(user.username)
+        existing_task = user_tasks.get(task_user.username)
         if existing_task:
             existing_task.cancel()
-            await self.highrise.chat(f"Stopping your previous emote task, {user.username}!")
+            await self.highrise.chat(f"Stopping previous emote task for {task_user.username}!")
 
         # Use regular expression to find the emote name in the user's input
         emote_match = re.match(r'^\w+$', emote_name)
@@ -91,8 +98,8 @@ async def send_specific_emote_periodically(self, user, emote_name):
             return
 
         # Create a new task for the user
-        task = asyncio.create_task(send_emote_periodically(self, user, provided_emote_name))
-        user_tasks[user.username] = task
+        task = asyncio.create_task(send_emote_periodically(self, task_user, provided_emote_name))
+        user_tasks[task_user.username] = task
 
     except Exception as e:
         await self.highrise.chat(f"Error sending emote: {str(e)}")
@@ -104,10 +111,9 @@ async def send_emote_periodically(self, user, emote_name):
             await self.highrise.chat(f"User {user.username} is not in the room. Stopping.")
             return
 
-        # Check if the emote_name exists in the emotesava list
         emote_found = False
         for emotes in emotesava:
-            if emote_name.startswith(f"{emotes.rsplit('-', 1)[-1]}"): 
+            if emote_name.startswith(f"{emotes.rsplit('-', 1)[-1]}"):
                 await self.highrise.send_emote(emotes, user.id)
                 await asyncio.sleep(2)
                 emote_found = True
@@ -115,7 +121,6 @@ async def send_emote_periodically(self, user, emote_name):
 
         if not emote_found:
             await self.highrise.chat(f"Emote '{emote_name}' is not available. Type !emo for suggestions")
-            # Cancel the task if the emote is not available
             existing_task = user_tasks.get(user.username)
             if existing_task:
                 existing_task.cancel()
@@ -133,3 +138,11 @@ async def stop_emote_task(self, user):
         await self.highrise.chat(f"Stopped your emote task, {user.username}!")
     else:
         await self.highrise.chat(f"No active emote task to stop, {user.username}!")
+
+async def stop_emote_task_by_username(self, username):
+    existing_task = user_tasks.get(username)
+    if existing_task:
+        existing_task.cancel()
+        await self.highrise.chat(f"Stopped emote task for {username}!")
+    else:
+        await self.highrise.chat(f"No active emote task to stop for {username}!")

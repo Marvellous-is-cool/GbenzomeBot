@@ -7,9 +7,9 @@ import os
 from highrise.models import *
 from highrise.webapi import *
 import importlib.util
-from loop_emote import send_specific_emote_periodically, stop_emote_task
+from loop_emote import send_specific_emote_periodically, stop_emote_task, stop_emote_task_by_username
 from getItems import getclothes, getCommands
-from functions.play import play, end
+from functions.play import play, end, soon, is_game_active
 # from webserver import keep_alive
 
 emotesava = [
@@ -32,7 +32,9 @@ emotesava = [
     "idle-dance-tiktok4"
 ]
 
-vip_users = []
+vip_users = [
+  "User_taken2"
+]
 
 commds = [
     'allemo',
@@ -163,6 +165,56 @@ class Bot(BaseBot):
       await self.highrise.teleport(user_id=user_id,
                                    dest=Position(float(x), float(y),
                                                  float(z)))
+   
+    # --- Improved VIP teleport logic for host platform ---
+    if lowerMsg.startswith("!tele host"):
+        is_vip = user.id == self.owner_id or user.username == "coolbuoy" or user.username in vip_users
+        if not is_vip:
+            await self.highrise.chat(
+                f"You are not a VIP. Only VIPs are authorized to use the teleporter."
+            )
+            return
+        try:
+            # Teleport the command caller directly to host platform
+            await self.highrise.teleport(
+                user_id=user.id,
+                dest=Position(float(2), float(9.5), float(0))
+            )
+        except Exception as e:
+            await self.highrise.chat(f"Teleport error: {e}")
+    
+    # --- Improved VIP teleport logic ---
+    if lowerMsg.startswith("!pos"):
+      is_vip = user.id == self.owner_id or user.username == "coolbuoy" or user.username in vip_users
+      if not is_vip:
+        await self.highrise.chat(
+            f"You are not a VIP. Only VIPs are authorized to use the teleporter."
+        )
+        return
+      try:
+        command, username = lowerMsg.split(" ")
+      except:
+        await self.highrise.chat(
+            "Incorrect format, please use !pos <username>")
+        return
+      response = await self.highrise.get_room_users()
+      if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
+        room_users = response.content
+      else:
+        await self.highrise.chat("Failed to fetch room users.")
+        return
+      user_id = None
+      for room_user, pos in room_users:
+        if room_user.username.lower() == username.lower():
+          user_id = room_user.id
+          break
+      if user_id is None:
+        await self.highrise.chat(
+            "User not found, please specify a valid user and coordinate")
+        return
+      await self.highrise.teleport(user_id=user_id,
+                                   dest=Position(float(11), float(0),
+                                                 float(29)))
 
     if message.startswith("kick"):
       if user.username != "coolbuoy":
@@ -204,18 +256,60 @@ class Bot(BaseBot):
         return
       await self.highrise.chat(f"{username} has been kicked out of the room.")
 
+    # --- Loop emote for another user: !loop <emote> <username> ---
     if lowerMsg.startswith("!loop"):
-      try:
-        splited_message = message.split(" ")
-        if len(splited_message) < 2:
-          await self.highrise.chat(
-              "Invalid command format. Usage: !loop <emote_name>")
-        else:
-          emote_name = splited_message[
-              -1]  # Get the last word as the emote name
-          await send_specific_emote_periodically(self, user, emote_name)
-      except Exception as e:
-        await self.highrise.chat(f"Error: {str(e)}")
+        try:
+            parts = message.split()
+            if len(parts) == 2:
+                # !loop <emote> (self loop)
+                emote_name = parts[1]
+                await send_specific_emote_periodically(self, user, emote_name)
+            elif len(parts) == 3:
+                # !loop <emote> <username>
+                emote_name = parts[1]
+                target_username = parts[2].lstrip("@")
+                # Prevent looping on owner or VIPs
+                if target_username.lower() == self.owner_id or target_username.lower() == "coolbuoy" or target_username.lower() in [vip.lower() for vip in vip_users]:
+                    await self.highrise.chat("You cannot loop emotes on the owner or VIPs.")
+                    return
+                # Find target user in room
+                room_users_resp = await self.highrise.get_room_users()
+                target_user = None
+                if hasattr(room_users_resp, "content"):
+                    for room_user, _ in room_users_resp.content:
+                        if room_user.username.lower() == target_username.lower():
+                            target_user = room_user
+                            break
+                if not target_user:
+                    await self.highrise.chat(f"User '{target_username}' not found in the room.")
+                    return
+                await send_specific_emote_periodically(self, user, emote_name, target_user=target_user)
+            else:
+                await self.highrise.chat("Usage: !loop <emote> [username]")
+        except Exception as e:
+            await self.highrise.chat(f"Error: {str(e)}")
+        return
+
+    # --- Stop emote for another user: !stop <username> ---
+    if lowerMsg.startswith("!stop"):
+        try:
+            parts = message.split()
+            if len(parts) == 1:
+                # !stop (self stop)
+                await stop_emote_task(self, user)
+            elif len(parts) == 2:
+                # !stop <username>
+                target_username = parts[1].lstrip("@")
+                # Prevent stopping owner or VIPs
+                if target_username.lower() == self.owner_id or target_username.lower() == "coolbuoy" or target_username.lower() in [vip.lower() for vip in vip_users]:
+                    await self.highrise.chat("You cannot stop emotes for the owner or VIPs.")
+                    return
+                await stop_emote_task_by_username(self, target_username)
+            else:
+                await self.highrise.chat("Usage: !stop [username]")
+        except Exception as e:
+            await self.highrise.chat(f"Error: {str(e)}")
+        return
 
     if lowerMsg.startswith("stop"):
       await stop_emote_task(self, user)
@@ -284,12 +378,15 @@ class Bot(BaseBot):
       except Exception as e:
         await self.highrise.chat(f"An Error Occured: {e}")
 
-    # Add play/end command handling for owner
+    # Add play/end/soon command handling for owner
     if lowerMsg.startswith("!play") and user.id == self.owner_id:
         await play(self, user, message)
         return
     if lowerMsg.startswith("!end") and user.id == self.owner_id:
         await end(self, user, message)
+        return
+    if lowerMsg.startswith("!soon") and user.id == self.owner_id:
+        await soon(self, user, message)
         return
 
   async def on_emote(self, user: User, emote_id: str,
@@ -701,12 +798,22 @@ class Bot(BaseBot):
       await self.highrise.chat(
         f"Wow! It's the beauty's arrival! I'm jealous, Coolbuoy. Welcome, Beauty!")
       
-      # Else 
+    # Else - regular welcome
     else:
        await self.highrise.react("wave", user.id)
-       await self.highrise.chat(
-        f"Hiiii, welcome {user.username}, Please follow the arrow to the spike that will take you down to the game."
-    )
+       
+       # Change welcome message based on game state
+       if is_game_active():
+           await self.highrise.chat(
+            f"Welcome {user.username}! The Bingo game has already started downstairs. Please follow the arrow to join in!"
+           )
+       else:
+           await self.highrise.chat(
+            f"Hiiii, welcome {user.username}, Please follow the arrow to the spike that will take you down to the game..."
+           )
+           await self.highrise.chat(
+            f"You can also try out emotes, just type the last word of the emote name in the room to use it. For example, to use 'emote-swordfight', type 'swordfight' in the room. or send me !emo for a random one"
+           )
 
   async def on_user_leave(self, user: User) -> None:
     await self.highrise.chat(
