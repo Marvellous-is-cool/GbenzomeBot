@@ -811,9 +811,6 @@ class Bot(BaseBot):
            await self.highrise.chat(
             f"Hiiii, welcome {user.username}, Please follow the arrow to the spike that will take you down to the game..."
            )
-           await self.highrise.chat(
-            f"You can also try out emotes, just type the last word of the emote name in the room to use it. For example, to use 'emote-swordfight', type 'swordfight' in the room. or send me !emo for a random one"
-           )
 
   async def on_user_leave(self, user: User) -> None:
     await self.highrise.chat(
