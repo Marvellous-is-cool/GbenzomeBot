@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 import traceback
 import asyncio
 from aiohttp.client_exceptions import ClientConnectionError, ClientConnectorError, ClientConnectionResetError
+from main import Bot  # Import the Bot class from main.py
 
 # Load environment variables from .env file
 load_dotenv()
@@ -41,10 +42,8 @@ class WebServer():
 
 class RunBot():
   def __init__(self):
-    self.definitions = {
-      'apiKey': os.getenv('API_KEY'),
-      'roomId': os.getenv('ROOM_ID')
-    }
+    self.api_key = os.getenv('API_KEY')
+    self.room_id = os.getenv('ROOM_ID')
     self.reconnect_attempts = 0
     self.max_reconnect_attempts = 10
     self.reconnect_delay = 5  # seconds
@@ -52,7 +51,11 @@ class RunBot():
   def run_loop(self):
     while True:
       try:
-        arun(main(self.definitions))
+        # Create a proper BotDefinition object
+        bot_instance = Bot()
+        definitions = [BotDefinition(bot_instance, self.room_id, self.api_key)]
+        arun(main(definitions))
+        
         # If we reach here, the bot exited cleanly
         print("Bot exited normally. Restarting...")
         time.sleep(1)  # Short delay before restart
