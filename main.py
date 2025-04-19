@@ -11,6 +11,7 @@ from loop_emote import send_specific_emote_periodically, stop_emote_task, stop_e
 from getItems import getclothes, getCommands
 from functions.play import play, end, soon, is_game_active
 # from webserver import keep_alive
+from aiohttp.client_exceptions import ClientConnectionError, ClientConnectorError, ClientConnectionResetError
 
 emotesava = [
     "emote-kiss", "emote-no", "emote-sad", "emote-yes", "emote-laughing",
@@ -72,20 +73,42 @@ class Bot(BaseBot):
 
 
   async def on_chat(self, user: User, message: str) -> None:
-    response = await self.command_handler(user.id, message)
-    if response:
-        await self.highrise.chat("Room users fetched successfully.")
-    lowerMsg = message.lower()
-    response = await self.highrise.get_room_users()
-    if hasattr(response, 'content'):
-        if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
-            roomUsers = response.content
-        else:
-            await self.highrise.chat("Failed to fetch room users.")
+    try:
+        response = await self.command_handler(user.id, message)
+        if response:
+            await self.highrise.chat("Room users fetched successfully.")
+        lowerMsg = message.lower()
+        
+        # Add error handling around this API call
+        try:
+            response = await self.highrise.get_room_users()
+            if hasattr(response, 'content'):
+                if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
+                    roomUsers = response.content
+                else:
+                    await self.highrise.chat("Failed to fetch room users.")
+                    return
+            else:
+                await self.highrise.chat("Failed to fetch room users.")
+                return
+        except (ClientConnectionResetError, ClientConnectorError, ClientConnectionError) as e:
+            print(f"Connection error in get_room_users: {e}")
+            # Could attempt to reconnect here, but for now just inform the user
+            await self.highrise.chat("Connection error while fetching room users. Please try again.")
             return
-    else:
-        await self.highrise.chat("Failed to fetch room users.")
-        return
+        except Exception as e:
+            print(f"Unexpected error in get_room_users: {e}")
+            await self.highrise.chat("An error occurred while fetching room users.")
+            return
+
+        # Proceed with the rest of your command handling
+        # ...existing code...
+    except (ClientConnectionResetError, ClientConnectorError, ClientConnectionError) as e:
+        print(f"Connection error in on_chat: {e}")
+        # Connection issues - could implement a reconnection strategy here
+    except Exception as e:
+        print(f"Unexpected error in on_chat: {e}")
+        # Log the error but don't crash
 
     if lowerMsg.startswith("!door"):
       await self.highrise.teleport(user_id=user.id,

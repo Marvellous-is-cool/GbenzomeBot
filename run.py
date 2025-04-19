@@ -10,6 +10,8 @@ import time
 import os
 from dotenv import load_dotenv
 import traceback
+import asyncio
+from aiohttp.client_exceptions import ClientConnectionError, ClientConnectorError, ClientConnectionResetError
 
 # Load environment variables from .env file
 load_dotenv()
@@ -38,28 +40,35 @@ class WebServer():
 
 
 class RunBot():
-  def __init__(self) -> None:
-    self.room_id = os.getenv('ROOM_ID', 'default_room_id')  # Provide a default value
-    self.bot_token = os.getenv('BOT_TOKEN', 'default_bot_token')  # Provide a default value
-    self.bot_file = "main"
-    self.bot_class = "Bot"
+  def __init__(self):
+    self.definitions = {
+      'apiKey': os.getenv('API_KEY'),
+      'roomId': os.getenv('ROOM_ID')
+    }
+    self.reconnect_attempts = 0
+    self.max_reconnect_attempts = 10
+    self.reconnect_delay = 5  # seconds
 
-    self.definitions = [
-        BotDefinition(
-            getattr(import_module(self.bot_file), self.bot_class)(),
-            self.room_id, self.bot_token)
-    ]  # More BotDefinition classes can be added to the definitions list
-
-  def run_loop(self) -> None:
+  def run_loop(self):
     while True:
       try:
         arun(main(self.definitions))
-
+        # If we reach here, the bot exited cleanly
+        print("Bot exited normally. Restarting...")
+        time.sleep(1)  # Short delay before restart
+        self.reconnect_attempts = 0  # Reset counter on clean exit
       except Exception as e:
-        print("Error: ", e)
+        self.reconnect_attempts += 1
+        delay = min(self.reconnect_delay * self.reconnect_attempts, 60)  # Cap at 60 seconds
+        print(f"Bot crashed with error: {e}")
         traceback.print_exc()
-        time.sleep(5)
-
+        print(f"Reconnect attempt {self.reconnect_attempts}/{self.max_reconnect_attempts} in {delay} seconds")
+        
+        if self.reconnect_attempts > self.max_reconnect_attempts:
+          print("Maximum reconnection attempts exceeded. Exiting.")
+          break
+          
+        time.sleep(delay)
 
 if __name__ == "__main__":
   WebServer().keep_alive()
