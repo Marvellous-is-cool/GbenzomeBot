@@ -1,0 +1,1148 @@
+{
+  "all_emotes": {
+    "emote-kiss": {
+      "id": "emote-kiss",
+      "name": "kiss",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-no": {
+      "id": "emote-no",
+      "name": "no",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-sad": {
+      "id": "emote-sad",
+      "name": "sad",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-yes": {
+      "id": "emote-yes",
+      "name": "yes",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-laughing": {
+      "id": "emote-laughing",
+      "name": "laughing",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-hello": {
+      "id": "emote-hello",
+      "name": "hello",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-wave": {
+      "id": "emote-wave",
+      "name": "wave",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-shy": {
+      "id": "emote-shy",
+      "name": "shy",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-tired": {
+      "id": "emote-tired",
+      "name": "tired",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-angry": {
+      "id": "emoji-angry",
+      "name": "angry",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "idle-loop-sitfloor": {
+      "id": "idle-loop-sitfloor",
+      "name": "loop-sitfloor",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-thumbsup": {
+      "id": "emoji-thumbsup",
+      "name": "thumbsup",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-cursing": {
+      "id": "emoji-cursing",
+      "name": "cursing",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-flex": {
+      "id": "emoji-flex",
+      "name": "flex",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-gagging": {
+      "id": "emoji-gagging",
+      "name": "gagging",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-celebrate": {
+      "id": "emoji-celebrate",
+      "name": "celebrate",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-bow": {
+      "id": "emote-bow",
+      "name": "bow",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-confused": {
+      "id": "emote-confused",
+      "name": "confused",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-model": {
+      "id": "emote-model",
+      "name": "model",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-curtsy": {
+      "id": "emote-curtsy",
+      "name": "curtsy",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-snowball": {
+      "id": "emote-snowball",
+      "name": "snowball",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-hot": {
+      "id": "emote-hot",
+      "name": "hot",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-snowangel": {
+      "id": "emote-snowangel",
+      "name": "snowangel",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-charging": {
+      "id": "emote-charging",
+      "name": "charging",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "dance-macarena": {
+      "id": "dance-macarena",
+      "name": "macarena",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-tiktok8": {
+      "id": "dance-tiktok8",
+      "name": "tiktok8",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-blackpink": {
+      "id": "dance-blackpink",
+      "name": "blackpink",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-tiktok2": {
+      "id": "dance-tiktok2",
+      "name": "tiktok2",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-pennywise": {
+      "id": "dance-pennywise",
+      "name": "pennywise",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-russian": {
+      "id": "dance-russian",
+      "name": "russian",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-shoppingcart": {
+      "id": "dance-shoppingcart",
+      "name": "shoppingcart",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-enthusiastic": {
+      "id": "idle-enthusiastic",
+      "name": "enthusiastic",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-telekinesis": {
+      "id": "emote-telekinesis",
+      "name": "telekinesis",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-float": {
+      "id": "emote-float",
+      "name": "float",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-teleporting": {
+      "id": "emote-teleporting",
+      "name": "teleporting",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-swordfight": {
+      "id": "emote-swordfight",
+      "name": "swordfight",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-maniac": {
+      "id": "emote-maniac",
+      "name": "maniac",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-energyball": {
+      "id": "emote-energyball",
+      "name": "energyball",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-snake": {
+      "id": "emote-snake",
+      "name": "snake",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-singing": {
+      "id": "idle-singing",
+      "name": "singing",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-frog": {
+      "id": "emote-frog",
+      "name": "frog",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-superpose": {
+      "id": "emote-superpose",
+      "name": "superpose",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-cute": {
+      "id": "emote-cute",
+      "name": "cute",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-tiktok9": {
+      "id": "dance-tiktok9",
+      "name": "tiktok9",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-weird": {
+      "id": "dance-weird",
+      "name": "weird",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-tiktok10": {
+      "id": "dance-tiktok10",
+      "name": "tiktok10",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose7": {
+      "id": "emote-pose7",
+      "name": "pose7",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose8": {
+      "id": "emote-pose8",
+      "name": "pose8",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-dance-casual": {
+      "id": "idle-dance-casual",
+      "name": "dance-casual",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose1": {
+      "id": "emote-pose1",
+      "name": "pose1",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose3": {
+      "id": "emote-pose3",
+      "name": "pose3",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose5": {
+      "id": "emote-pose5",
+      "name": "pose5",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-cutey": {
+      "id": "emote-cutey",
+      "name": "cutey",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-punkguitar": {
+      "id": "emote-punkguitar",
+      "name": "punkguitar",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-zombierun": {
+      "id": "emote-zombierun",
+      "name": "zombierun",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-fashionista": {
+      "id": "emote-fashionista",
+      "name": "fashionista",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-gravity": {
+      "id": "emote-gravity",
+      "name": "gravity",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-icecream": {
+      "id": "dance-icecream",
+      "name": "icecream",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-wrong": {
+      "id": "dance-wrong",
+      "name": "wrong",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-uwu": {
+      "id": "idle-uwu",
+      "name": "uwu",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-dance-tiktok4": {
+      "id": "idle-dance-tiktok4",
+      "name": "dance-tiktok4",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-lust": {
+      "id": "emote-lust",
+      "name": "lust",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-greedy": {
+      "id": "emote-greedy",
+      "name": "greedy",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    }
+  },
+  "free_emotes": {
+    "emote-kiss": {
+      "id": "emote-kiss",
+      "name": "kiss",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-no": {
+      "id": "emote-no",
+      "name": "no",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-sad": {
+      "id": "emote-sad",
+      "name": "sad",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-yes": {
+      "id": "emote-yes",
+      "name": "yes",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-laughing": {
+      "id": "emote-laughing",
+      "name": "laughing",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-hello": {
+      "id": "emote-hello",
+      "name": "hello",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-wave": {
+      "id": "emote-wave",
+      "name": "wave",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-shy": {
+      "id": "emote-shy",
+      "name": "shy",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-tired": {
+      "id": "emote-tired",
+      "name": "tired",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-angry": {
+      "id": "emoji-angry",
+      "name": "angry",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "idle-loop-sitfloor": {
+      "id": "idle-loop-sitfloor",
+      "name": "loop-sitfloor",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-thumbsup": {
+      "id": "emoji-thumbsup",
+      "name": "thumbsup",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-cursing": {
+      "id": "emoji-cursing",
+      "name": "cursing",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-flex": {
+      "id": "emoji-flex",
+      "name": "flex",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-gagging": {
+      "id": "emoji-gagging",
+      "name": "gagging",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emoji-celebrate": {
+      "id": "emoji-celebrate",
+      "name": "celebrate",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-bow": {
+      "id": "emote-bow",
+      "name": "bow",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-confused": {
+      "id": "emote-confused",
+      "name": "confused",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-model": {
+      "id": "emote-model",
+      "name": "model",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-curtsy": {
+      "id": "emote-curtsy",
+      "name": "curtsy",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-snowball": {
+      "id": "emote-snowball",
+      "name": "snowball",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-hot": {
+      "id": "emote-hot",
+      "name": "hot",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-snowangel": {
+      "id": "emote-snowangel",
+      "name": "snowangel",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    },
+    "emote-charging": {
+      "id": "emote-charging",
+      "name": "charging",
+      "price": 0,
+      "is_purchasable": true,
+      "rarity": "NONE",
+      "is_free": true
+    }
+  },
+  "premium_emotes": {
+    "dance-macarena": {
+      "id": "dance-macarena",
+      "name": "macarena",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-tiktok8": {
+      "id": "dance-tiktok8",
+      "name": "tiktok8",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-blackpink": {
+      "id": "dance-blackpink",
+      "name": "blackpink",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-tiktok2": {
+      "id": "dance-tiktok2",
+      "name": "tiktok2",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-pennywise": {
+      "id": "dance-pennywise",
+      "name": "pennywise",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-russian": {
+      "id": "dance-russian",
+      "name": "russian",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-shoppingcart": {
+      "id": "dance-shoppingcart",
+      "name": "shoppingcart",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-enthusiastic": {
+      "id": "idle-enthusiastic",
+      "name": "enthusiastic",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-telekinesis": {
+      "id": "emote-telekinesis",
+      "name": "telekinesis",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-float": {
+      "id": "emote-float",
+      "name": "float",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-teleporting": {
+      "id": "emote-teleporting",
+      "name": "teleporting",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-swordfight": {
+      "id": "emote-swordfight",
+      "name": "swordfight",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-maniac": {
+      "id": "emote-maniac",
+      "name": "maniac",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-energyball": {
+      "id": "emote-energyball",
+      "name": "energyball",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-snake": {
+      "id": "emote-snake",
+      "name": "snake",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-singing": {
+      "id": "idle-singing",
+      "name": "singing",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-frog": {
+      "id": "emote-frog",
+      "name": "frog",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-superpose": {
+      "id": "emote-superpose",
+      "name": "superpose",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-cute": {
+      "id": "emote-cute",
+      "name": "cute",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-tiktok9": {
+      "id": "dance-tiktok9",
+      "name": "tiktok9",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-weird": {
+      "id": "dance-weird",
+      "name": "weird",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-tiktok10": {
+      "id": "dance-tiktok10",
+      "name": "tiktok10",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose7": {
+      "id": "emote-pose7",
+      "name": "pose7",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose8": {
+      "id": "emote-pose8",
+      "name": "pose8",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-dance-casual": {
+      "id": "idle-dance-casual",
+      "name": "dance-casual",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose1": {
+      "id": "emote-pose1",
+      "name": "pose1",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose3": {
+      "id": "emote-pose3",
+      "name": "pose3",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-pose5": {
+      "id": "emote-pose5",
+      "name": "pose5",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-cutey": {
+      "id": "emote-cutey",
+      "name": "cutey",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-punkguitar": {
+      "id": "emote-punkguitar",
+      "name": "punkguitar",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-zombierun": {
+      "id": "emote-zombierun",
+      "name": "zombierun",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-fashionista": {
+      "id": "emote-fashionista",
+      "name": "fashionista",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-gravity": {
+      "id": "emote-gravity",
+      "name": "gravity",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-icecream": {
+      "id": "dance-icecream",
+      "name": "icecream",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "dance-wrong": {
+      "id": "dance-wrong",
+      "name": "wrong",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-uwu": {
+      "id": "idle-uwu",
+      "name": "uwu",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "idle-dance-tiktok4": {
+      "id": "idle-dance-tiktok4",
+      "name": "dance-tiktok4",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-lust": {
+      "id": "emote-lust",
+      "name": "lust",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    },
+    "emote-greedy": {
+      "id": "emote-greedy",
+      "name": "greedy",
+      "price": 100,
+      "is_purchasable": true,
+      "rarity": "RARE",
+      "is_free": false
+    }
+  },
+  "all_emotes_list": [
+    "emote-kiss",
+    "emote-no",
+    "emote-sad",
+    "emote-yes",
+    "emote-laughing",
+    "emote-hello",
+    "emote-wave",
+    "emote-shy",
+    "emote-tired",
+    "emoji-angry",
+    "idle-loop-sitfloor",
+    "emoji-thumbsup",
+    "emoji-cursing",
+    "emoji-flex",
+    "emoji-gagging",
+    "emoji-celebrate",
+    "emote-bow",
+    "emote-confused",
+    "emote-model",
+    "emote-curtsy",
+    "emote-snowball",
+    "emote-hot",
+    "emote-snowangel",
+    "emote-charging",
+    "dance-macarena",
+    "dance-tiktok8",
+    "dance-blackpink",
+    "dance-tiktok2",
+    "dance-pennywise",
+    "dance-russian",
+    "dance-shoppingcart",
+    "idle-enthusiastic",
+    "emote-telekinesis",
+    "emote-float",
+    "emote-teleporting",
+    "emote-swordfight",
+    "emote-maniac",
+    "emote-energyball",
+    "emote-snake",
+    "idle-singing",
+    "emote-frog",
+    "emote-superpose",
+    "emote-cute",
+    "dance-tiktok9",
+    "dance-weird",
+    "dance-tiktok10",
+    "emote-pose7",
+    "emote-pose8",
+    "idle-dance-casual",
+    "emote-pose1",
+    "emote-pose3",
+    "emote-pose5",
+    "emote-cutey",
+    "emote-punkguitar",
+    "emote-zombierun",
+    "emote-fashionista",
+    "emote-gravity",
+    "dance-icecream",
+    "dance-wrong",
+    "idle-uwu",
+    "idle-dance-tiktok4",
+    "emote-lust",
+    "emote-greedy"
+  ],
+  "free_emotes_list": [
+    "emote-kiss",
+    "emote-no",
+    "emote-sad",
+    "emote-yes",
+    "emote-laughing",
+    "emote-hello",
+    "emote-wave",
+    "emote-shy",
+    "emote-tired",
+    "emoji-angry",
+    "idle-loop-sitfloor",
+    "emoji-thumbsup",
+    "emoji-cursing",
+    "emoji-flex",
+    "emoji-gagging",
+    "emoji-celebrate",
+    "emote-bow",
+    "emote-confused",
+    "emote-model",
+    "emote-curtsy",
+    "emote-snowball",
+    "emote-hot",
+    "emote-snowangel",
+    "emote-charging"
+  ],
+  "premium_emotes_list": [
+    "dance-macarena",
+    "dance-tiktok8",
+    "dance-blackpink",
+    "dance-tiktok2",
+    "dance-pennywise",
+    "dance-russian",
+    "dance-shoppingcart",
+    "idle-enthusiastic",
+    "emote-telekinesis",
+    "emote-float",
+    "emote-teleporting",
+    "emote-swordfight",
+    "emote-maniac",
+    "emote-energyball",
+    "emote-snake",
+    "idle-singing",
+    "emote-frog",
+    "emote-superpose",
+    "emote-cute",
+    "dance-tiktok9",
+    "dance-weird",
+    "dance-tiktok10",
+    "emote-pose7",
+    "emote-pose8",
+    "idle-dance-casual",
+    "emote-pose1",
+    "emote-pose3",
+    "emote-pose5",
+    "emote-cutey",
+    "emote-punkguitar",
+    "emote-zombierun",
+    "emote-fashionista",
+    "emote-gravity",
+    "dance-icecream",
+    "dance-wrong",
+    "idle-uwu",
+    "idle-dance-tiktok4",
+    "emote-lust",
+    "emote-greedy"
+  ]
+}

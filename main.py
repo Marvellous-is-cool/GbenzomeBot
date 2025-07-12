@@ -9,32 +9,86 @@ from highrise.webapi import *
 import importlib.util
 from loop_emote import send_specific_emote_periodically, stop_emote_task, stop_emote_task_by_username
 from getItems import getclothes, getCommands
-from functions.play import play, end, soon, is_game_active
+from functions.request import request_song, skip_song, clear_queue, show_queue
+# Import emote catalog safely
+try:
+    from functions.emote_catalog import fetch_emote_catalog, list_emotes, search_emote, load_emote_catalog, use_manual_emotes_catalog
+    from functions.numbered_emotes import initialize_numbered_emotes, get_numbered_emotes_list
+    from functions.emo import emo, numbers
+    EMOTE_CATALOG_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Could not import emote_catalog module: {e}")
+    EMOTE_CATALOG_AVAILABLE = False
 # from webserver import keep_alive
 from aiohttp.client_exceptions import ClientConnectionError, ClientConnectorError, ClientConnectionResetError
 
-emotesava = [
-    "emote-kiss", "emote-no", "emote-sad", "emote-yes", "emote-laughing",
-    "emote-hello", "emote-wave", "emote-shy", "emote-tired", "emoji-angry",
-    "idle-loop-sitfloor", "emoji-thumbsup", "emote-lust", "emoji-cursing",
-    "emote-greedy", "emoji-flex", "emoji-gagging", "emoji-celebrate",
-    "dance-macarena", "dance-tiktok8", "dance-blackpink", "emote-model",
-    "dance-tiktok2", "dance-pennywise", "emote-bow", "dance-russian",
-    "emote-curtsy", "emote-snowball", "emote-hot", "emote-snowangel",
-    "emote-charging", "dance-shoppingcart", "emote-confused",
-    "idle-enthusiastic", "emote-telekinesis", "emote-float",
-    "emote-teleporting", "emote-swordfight", "emote-maniac",
-    "emote-energyball", "emote-snake", "idle_singing", "emote-frog",
-    "emote-superpose", "emote-cute", "dance-tiktok9", "dance-weird",
-    "dance-tiktok10", "emote-pose7", "emote-pose8", "idle-dance-casual",
-    "emote-pose1", "emote-pose3", "emote-pose5", "emote-cutey",
-    "emote-punkguitar", "emote-zombierun", "emote-fashionista",
-    "emote-gravity", "dance-icecream", "dance-wrong", "idle-uwu",
-    "idle-dance-tiktok4"
+emotesava = ["emote-kiss", "emote-no", "emote-sad", "emote-yes", "emote-laughing", 
+        "emote-hello", "emote-wave", "emote-shy", "emote-tired", "emoji-angry",
+        "idle-loop-sitfloor", "emoji-thumbsup", "emoji-cursing", "emoji-gagging",
+        "emoji-celebrate", "emote-bow", "emote-confused", "emote-model", "emote-curtsy",
+        "emote-snowball", "emote-hot", "emote-snowangel", "emote-charging",
+        "dance-kawai", "emote-hyped", "emoji-halo", "idle-hero", "emote-astronaut",
+        "emote-zombierun", "emote-dab", "emote-snake", "idle-loop-sad", "idle-loop-happy",
+        "emote-kissing", "emoji-shush", "idle_tough", "emote-fail3", "emote-shocked",
+        "emote-theatrical-test", "emote-fireworks", "emote-electrified", "idle-headless",
+        "emote-armcannon", "dance-tiktok4", "dance-tiktok7", "dance-tiktok13", "dance-hiphop",
+        "emote-hopscotch", "emote-outfit2", "emote-pose12", "emote-fading", "emote-pose13",
+        "profile-breakscreen", "emote-surf", "emote-cartwheel", "emote-kissing-passionate",
+        "dance-tiktok1", "emote-flirt", "emote-receive-disappointed", "emote-gooey", "emote-oops",
+        "emote-thief", "emote-sheephop", "emote-runhop", "dance-tiktok15", "emote-receive-happy",
+        "dance-tiktok6", "emote-confused2", "emote-pose4", "emote-dinner", "emote-wavey", 
+        "emote-pose2", "dance-shuffle", "emote-twitched", "emote-juggling", "emote-opera",
+        "dance-tiktok3", "dance-kid", "dance-anime3", "dance-tiktok16", "dance-tiktok12",
+        "dance-tiktok5", "idle-cold", "emote-pose11", "emote-handwalk", "emote-dramatic",
+        "emote-outfit", "sit-chair", "idle-space", "mining-mine", "mining-success", "mining-fail",
+        "fishing-pull", "fishing-idle", "fishing-cast", "fishing-pull-small", "dance-hipshake",
+        "dance-fruity", "dance-cheerleader", "dance-tiktok14", "emote-looping", "idle-floating",
+        "dance-wild", "emote-howl", "idle-howl", "emote-trampoline", "emote-launch",
+        "emote-cutesalute", "emote-salute", "dance-tiktok11", "dance-employee", "emote-gift",
+        "dance-touch", "sit-relaxed", "emote-sleigh", "emote-attention", "dance-jinglebell",
+        "emote-timejump", "idle-toilet", "idle-nervous", "idle-wild", "emote-iceskating",
+        "sit-open", "emote-celebrate", "emote-shrink", "emote-pose10", "emote-shy2",
+        "emote-puppet", "emote-headblowup", "emote-creepycute", "dance-creepypuppet",
+        "dance-anime", "dance-pinguin", "idle-guitar", "emote-boxer", "emote-celebrationstep",
+        "emote-pose6", "emote-pose9", "emote-stargazer", "emoji-sneeze", "emoji-pray",
+        "emote-handstand", "dance-smoothwalk", "emote-heartshape", "emoji-ghost",
+        "dance-aerobics", "emoji-naughty", "emote-deathdrop", "dance-duckwalk",
+        "emote-splitsdrop", "dance-voguehands", "emoji-give-up", "emoji-smirking",
+        "emoji-lying", "emoji-arrogance", "emoji-there", "emoji-poop", "emoji-hadoken",
+        "emoji-punch", "dance-handsup", "dance-metal", "dance-orangejustice", "idle-loop-aerobics",
+        "emoji-scared", "emote-think", "idle-loop-tired", "idle-dance-headbobbing",
+        "emote-disappear", "emoji-crying", "idle-loop-tapdance", "emoji-eyeroll",
+        "emoji-dizzy", "emoji-mind-blown", "emoji-clapping", "emote-hearteyes", "emote-suckthumb",
+        "emote-exasperated", "emote-jumpb", "emote-exasperatedb", "emote-peace", "emote-panic",
+        "emote-harlemshake", "emote-tapdance", "emote-gangnam", "emote-gordonshuffle", 
+        "emote-nightfever", "emote-judochop", "emote-rainbow", "emote-robot", "emote-happy",
+        "emote-slap", "emote-frustrated", "emote-embarrassed", "emote-rofl", "emote-roll",
+        "emote-superrun", "emote-superpunch", "emote-kicking", "emote-apart", "emote-hug",
+        "emote-secrethandshake", "emote-peekaboo", "emote-monster_fail", "dance-zombie",
+        "emote-ropepull", "emote-proposing", "emote-sumo", "emote-ninjarun", "emote-elbowbump",
+        "emote-baseball", "idle-floorsleeping", "idle-floorsleeping2", "emote-hugyourself",
+        "emote-death2", "emote-levelup", "dance-macarena", "dance-tiktok8", "dance-blackpink", "dance-tiktok2", 
+        "dance-pennywise", "dance-russian", "dance-shoppingcart", "idle-enthusiastic", 
+        "emote-telekinesis", "emote-float", "emote-teleporting", "emote-swordfight", 
+        "emote-maniac", "emote-energyball", "emote-snake", "idle_singing", "emote-frog", 
+        "emote-superpose", "emote-cute", "dance-tiktok9", "dance-weird", "dance-tiktok10", 
+        "emote-pose7", "emote-pose8", "idle-dance-casual", "emote-pose1", "emote-pose3", 
+        "emote-pose5", "emote-cutey", "emote-punkguitar", "emote-zombierun", "emote-fashionista",
+        "emote-gravity", "dance-icecream", "dance-wrong", "idle-uwu", "idle-dance-tiktok4", 
+        "emote-lust", "emote-greedy", "sit-idle-cute", "emote-thought", "idle-crouched", 
+        "wait", "idle-phone", "run-vertical", "walk-vertical", "emote-blowkisses",
+        "emote-", "emote-mittens", "emote-holding-hot-cocoa", "hcc-jetpack",
+        "dance-floss", "dance-martial-artist", "dance-spiritual", "dance-robotic",
+        "dance-breakdance", "idle-dance-swinging", "emote-graceful", "emote-frollicking",
+        "emoji-flex", "emote-headball", "emote-hero"
 ]
 
 vip_users = [
   "User_taken2"
+]
+
+host_users = [
+  # Hosts will be added here via !addhost command
 ]
 
 commds = [
@@ -55,6 +109,23 @@ commds = [
     '!allemo',
     'everyemo',
     'categories',
+    '!emotes',     # Show emote catalog (with categories: free, premium)
+    '!search',     # Search for emotes by name
+    '!refresh',    # Refresh the emote catalog (VIPs only)
+    '!numbers',    # Show numbered emote shortcuts
+    '!req',        # Request a song (VIP/Host/owner only)
+    '!buyvip',     # Buy VIP status for 500g
+    '!buyhost',    # Buy Host status for 1000g
+    '!queue',      # View the song queue
+    '!np',         # Show now playing song
+    '!skip',       # Skip current song (VIP/owner)
+    '!like',       # Like current song
+    '!clear',      # Clear song queue (VIP/owner)
+    '!vips',       # List all VIPs
+    '!addvip',     # Add a VIP (owner only)
+    '!hosts',      # List all hosts
+    '!addhost',    # Add a host (owner only)
+    '!removehost', # Remove a host (owner only)
 ]
 
 
@@ -70,49 +141,41 @@ class Bot(BaseBot):
     self.bot_position = None
     self.dice_interval = 3  # default
     self.dice_task = None
+    self.vip_users = vip_users  # Make vip_users accessible to other modules
+    self.host_users = host_users  # Make host_users accessible to other modules
 
 
   async def on_chat(self, user: User, message: str) -> None:
+    response = await self.command_handler(user.id, message)
+    if response:
+        await self.highrise.chat("Room users fetched successfully.")
+    lowerMsg = message.lower()
+    
+    # Add error handling around this API call
     try:
-        response = await self.command_handler(user.id, message)
-        if response:
-            await self.highrise.chat("Room users fetched successfully.")
-        lowerMsg = message.lower()
-        
-        # Add error handling around this API call
-        try:
-            response = await self.highrise.get_room_users()
-            if hasattr(response, 'content'):
-                if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
-                    roomUsers = response.content
-                else:
-                    await self.highrise.chat("Failed to fetch room users.")
-                    return
+        response = await self.highrise.get_room_users()
+        if hasattr(response, 'content'):
+            if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
+                roomUsers = response.content
             else:
                 await self.highrise.chat("Failed to fetch room users.")
                 return
-        except (ClientConnectionResetError, ClientConnectorError, ClientConnectionError) as e:
-            print(f"Connection error in get_room_users: {e}")
-            # Could attempt to reconnect here, but for now just inform the user
-            await self.highrise.chat("Connection error while fetching room users. Please try again.")
+        else:
+            await self.highrise.chat("Failed to fetch room users.")
             return
-        except Exception as e:
-            print(f"Unexpected error in get_room_users: {e}")
-            await self.highrise.chat("An error occurred while fetching room users.")
-            return
-
-        # Proceed with the rest of your command handling
-        # ...existing code...
     except (ClientConnectionResetError, ClientConnectorError, ClientConnectionError) as e:
-        print(f"Connection error in on_chat: {e}")
-        # Connection issues - could implement a reconnection strategy here
+        print(f"Connection error in get_room_users: {e}")
+        # Could attempt to reconnect here, but for now just inform the user
+        await self.highrise.chat("Connection error while fetching room users. Please try again.")
+        return
     except Exception as e:
-        print(f"Unexpected error in on_chat: {e}")
-        # Log the error but don't crash
+        print(f"Unexpected error in get_room_users: {e}")
+        await self.highrise.chat("An error occurred while fetching room users.")
+        return
 
-    if lowerMsg.startswith("!door"):
+    if lowerMsg.startswith("f1"):
       await self.highrise.teleport(user_id=user.id,
-                                   dest=Position(float(0), float(0), float(0)))
+                                   dest=Position(float(18), float(0), float(20)))
 
     if lowerMsg.startswith("!vips"):
       vipsinstr = ''
@@ -123,7 +186,7 @@ class Bot(BaseBot):
       await self.highrise.chat(f"Here are the vips: \n {vipsinstr} ")
 
     if lowerMsg.startswith("!addvip"):
-      if user.username != "coolbuoy":
+      if user.username != "coolbuoy" or user.username.lower() != "lil_miss_ammy":
         await self.highrise.chat("You do not have permission to do this")
         return
       #separete message into parts
@@ -150,12 +213,152 @@ class Bot(BaseBot):
         await self.highrise.chat(
             f"{username} has been added to one of the vips")
 
-    # --- Improved VIP teleport logic ---
-    if lowerMsg.startswith("!teleport"):
-      is_vip = user.id == self.owner_id or user.username == "coolbuoy" or user.username in vip_users
-      if not is_vip:
+    if lowerMsg.startswith("!hosts"):
+      hostsinstr = ''
+
+      for host in host_users:
+        hostsinstr += f"{host} \n"
+
+      await self.highrise.chat(f"Here are the hosts: \n {hostsinstr} ")
+
+    if lowerMsg.startswith("!addhost"):
+      if user.username != "coolbuoy" or user.username.lower() != "lil_miss_ammy":
+        await self.highrise.chat("You do not have permission to do this")
+        return
+      #separete message into parts
+      parts = message.split()
+      #check if message is valid "!addhost username"
+      if len(parts) != 2:
         await self.highrise.chat(
-            f"You are not a VIP. Only VIPs are authorized to use the teleporter."
+            "Invalid add host command format. use !addhost <username>")
+        return
+      #checks if there's a @ in the message
+      if "@" not in parts[1]:
+        username = parts[1]
+      else:
+        username = parts[1][1:]
+      #add user to hosts
+      try:
+        host_users.append(username)
+        await self.highrise.chat(
+            f"{username} has been added to one of the hosts")
+      except Exception as e:
+        await self.highrise.chat(f"{e}")
+        return
+
+    if lowerMsg.startswith("!removehost"):
+      if user.username != "coolbuoy" or user.username.lower() != "lil_miss_ammy":
+        await self.highrise.chat("You do not have permission to do this")
+        return
+      #separete message into parts
+      parts = message.split()
+      #check if message is valid "!removehost username"
+      if len(parts) != 2:
+        await self.highrise.chat(
+            "Invalid remove host command format. use !removehost <username>")
+        return
+      #checks if there's a @ in the message
+      if "@" not in parts[1]:
+        username = parts[1]
+      else:
+        username = parts[1][1:]
+      #remove user from hosts
+      try:
+        if username in host_users:
+          host_users.remove(username)
+          await self.highrise.chat(
+              f"{username} has been removed from hosts")
+        else:
+          await self.highrise.chat(f"{username} is not a host")
+      except Exception as e:
+        await self.highrise.chat(f"{e}")
+        return
+
+    # Buy VIP command - users can pay 500g to become VIP
+    if lowerMsg.startswith("!buyvip"):
+        # Check if user is already VIP
+        if user.username in vip_users:
+            await self.highrise.chat(f"@{user.username}, you are already a VIP!")
+            return
+            
+        # Check if user is the owner
+        if user.id == self.owner_id or user.username == "coolbuoy":
+            await self.highrise.chat(f"@{user.username}, you're the owner! You don't need to buy VIP.")
+            return
+        
+        try:
+            # Get user's wallet to check if they have enough gold
+            wallet = await self.highrise.get_wallet()
+            user_gold = 0
+            
+            # Find user's gold amount
+            if hasattr(wallet, 'content'):
+                for currency in wallet.content:
+                    if currency.type == "gold":
+                        user_gold = currency.amount
+                        break
+            
+            if user_gold < 500:
+                await self.highrise.chat(f"@{user.username}, you need 500g to become a VIP. You have {user_gold}g.")
+                return
+            
+            # Try to tip the bot 500g (this is how they "pay")
+            await self.highrise.chat(f"@{user.username}, please tip the bot 500g to complete your VIP purchase!")
+            await self.highrise.chat("Once you tip 500g, you'll automatically become a VIP and gain access to:")
+            await self.highrise.chat("• Song requests with !req <song> <artist>")
+            await self.highrise.chat("• Teleportation commands")
+            await self.highrise.chat("• Other VIP-only features")
+            
+        except Exception as e:
+            await self.highrise.chat(f"Error checking wallet: {str(e)}")
+            return
+
+    # Buy Host command - users can pay 1000g to become Host
+    if lowerMsg.startswith("!buyhost"):
+        # Check if user is already Host
+        if user.username in host_users:
+            await self.highrise.chat(f"@{user.username}, you are already a Host!")
+            return
+            
+        # Check if user is the owner
+        if user.id == self.owner_id or user.username == "coolbuoy":
+            await self.highrise.chat(f"@{user.username}, you're the owner! You don't need to buy Host.")
+            return
+        
+        try:
+            # Get user's wallet to check if they have enough gold
+            wallet = await self.highrise.get_wallet()
+            user_gold = 0
+            
+            # Find user's gold amount
+            if hasattr(wallet, 'content'):
+                for currency in wallet.content:
+                    if currency.type == "gold":
+                        user_gold = currency.amount
+                        break
+            
+            if user_gold < 1000:
+                await self.highrise.chat(f"@{user.username}, you need 1000g to become a Host. You have {user_gold}g.")
+                return
+            
+            # Try to tip the bot 1000g (this is how they "pay")
+            await self.highrise.chat(f"@{user.username}, please tip the bot 1000g to complete your Host purchase!")
+            await self.highrise.chat("Once you tip 1000g, you'll automatically become a Host and gain access to:")
+            await self.highrise.chat("• Song requests with !req <song> <artist>")
+            await self.highrise.chat("• Teleportation commands")
+            await self.highrise.chat("• Host-level privileges")
+            await self.highrise.chat("• Protection from emote loops and stops")
+            
+        except Exception as e:
+            await self.highrise.chat(f"Error checking wallet: {str(e)}")
+            return
+
+    # --- Improved VIP/Host teleport logic ---
+    if lowerMsg.startswith("!teleport"):
+      is_privileged = user.id == self.owner_id or user.username == "coolbuoy" or user.username in vip_users or user.username in host_users
+      if not is_privileged:
+        await self.highrise.chat(
+            f"You are not a VIP or Host. Only VIPs and Hosts are authorized to use the teleporter."
         )
         return
       try:
@@ -189,56 +392,48 @@ class Bot(BaseBot):
                                    dest=Position(float(x), float(y),
                                                  float(z)))
    
-    # --- Improved VIP teleport logic for host platform ---
-    if lowerMsg.startswith("!tele host"):
-        is_vip = user.id == self.owner_id or user.username == "coolbuoy" or user.username in vip_users
-        if not is_vip:
-            await self.highrise.chat(
-                f"You are not a VIP. Only VIPs are authorized to use the teleporter."
-            )
-            return
-        try:
-            # Teleport the command caller directly to host platform
-            await self.highrise.teleport(
-                user_id=user.id,
-                dest=Position(float(2), float(9.5), float(0))
-            )
-        except Exception as e:
-            await self.highrise.chat(f"Teleport error: {e}")
-    
-    # --- Improved VIP teleport logic ---
-    if lowerMsg.startswith("!pos"):
-      is_vip = user.id == self.owner_id or user.username == "coolbuoy" or user.username in vip_users
-      if not is_vip:
+    if lowerMsg.startswith("f2"):
+      try:
+          # Teleport the command caller directly to rooms
+          await self.highrise.teleport(
+              user_id=user.id,
+              dest=Position(float(13), float(6.5), float(13))
+          )
+      except Exception as e:
+          await self.highrise.chat(f"Teleport error: {e}")
+            
+    if lowerMsg.startswith("vip"):
+      is_privileged = user.id == self.owner_id or user.username == "coolbuoy" or user.username in vip_users or user.username in host_users
+      if not is_privileged:
         await self.highrise.chat(
-            f"You are not a VIP. Only VIPs are authorized to use the teleporter."
+            f"You are not a VIP or Host. Only VIPs and Hosts are authorized to teleport here."
         )
         return
       try:
-        command, username = lowerMsg.split(" ")
-      except:
+          # Teleport the command caller directly to rooms
+          await self.highrise.teleport(
+              user_id=user.id,
+              dest=Position(float(13), float(14), float(13))
+          )
+      except Exception as e:
+          await self.highrise.chat(f"Teleport error: {e}")
+            
+    if lowerMsg.startswith("host"):
+      is_privileged = user.id == self.owner_id or user.username == "coolbuoy" or user.username in host_users
+      if not is_privileged:
         await self.highrise.chat(
-            "Incorrect format, please use !pos <username>")
+            f"You are not Host. Hosts are authorized to teleport here."
+        )
         return
-      response = await self.highrise.get_room_users()
-      if isinstance(response, GetRoomUsersRequest.GetRoomUsersResponse):
-        room_users = response.content
-      else:
-        await self.highrise.chat("Failed to fetch room users.")
-        return
-      user_id = None
-      for room_user, pos in room_users:
-        if room_user.username.lower() == username.lower():
-          user_id = room_user.id
-          break
-      if user_id is None:
-        await self.highrise.chat(
-            "User not found, please specify a valid user and coordinate")
-        return
-      await self.highrise.teleport(user_id=user_id,
-                                   dest=Position(float(11), float(0),
-                                                 float(29)))
-
+      try:
+          # Teleport the command caller directly to rooms
+          await self.highrise.teleport(
+              user_id=user.id,
+              dest=Position(float(5), float(20), float(0))
+          )
+      except Exception as e:
+          await self.highrise.chat(f"Teleport error: {e}")
+            
     if message.startswith("kick"):
       if user.username != "coolbuoy":
         await self.highrise.chat("You do not have permission to do this")
@@ -291,9 +486,13 @@ class Bot(BaseBot):
                 # !loop <emote> <username>
                 emote_name = parts[1]
                 target_username = parts[2].lstrip("@")
-                # Prevent looping on owner or VIPs
-                if target_username.lower() == self.owner_id or target_username.lower() == "coolbuoy" or target_username.lower() in [vip.lower() for vip in vip_users]:
-                    await self.highrise.chat("You cannot loop emotes on the owner or VIPs.")
+                # Prevent looping on owner, VIPs, or Hosts
+                is_protected = (target_username.lower() == self.owner_id or 
+                               target_username.lower() == "coolbuoy" or 
+                               target_username.lower() in [vip.lower() for vip in vip_users] or
+                               target_username.lower() in [host.lower() for host in host_users])
+                if is_protected:
+                    await self.highrise.chat("You cannot loop emotes on the owner, VIPs, or Hosts.")
                     return
                 # Find target user in room
                 room_users_resp = await self.highrise.get_room_users()
@@ -323,9 +522,13 @@ class Bot(BaseBot):
             elif len(parts) == 2:
                 # !stop <username>
                 target_username = parts[1].lstrip("@")
-                # Prevent stopping owner or VIPs
-                if target_username.lower() == self.owner_id or target_username.lower() == "coolbuoy" or target_username.lower() in [vip.lower() for vip in vip_users]:
-                    await self.highrise.chat("You cannot stop emotes for the owner or VIPs.")
+                # Prevent stopping owner, VIPs, or Hosts
+                is_protected = (target_username.lower() == self.owner_id or 
+                               target_username.lower() == "coolbuoy" or 
+                               target_username.lower() in [vip.lower() for vip in vip_users] or
+                               target_username.lower() in [host.lower() for host in host_users])
+                if is_protected:
+                    await self.highrise.chat("You cannot stop emotes for the owner, VIPs, or Hosts.")
                     return
                 await stop_emote_task_by_username(self, target_username)
             else:
@@ -391,25 +594,33 @@ class Bot(BaseBot):
         await self.highrise.chat(
             f"An exception occurred[Due To {parts[0][1:]}]: {e}")
 
-    for emotename in emotesava:
-      try:
-        if lowerMsg.startswith(f"{emotename.rsplit('-', 1)[-1]}"):
-          await self.highrise.send_emote(emotename, user.id)
-        if lowerMsg.startswith(f"{emotename.rsplit('-', 1)[-1]} all"):
-          for roomUser, _ in roomUsers:
-            await self.highrise.send_emote(emotename, roomUser.id)
-      except Exception as e:
-        await self.highrise.chat(f"An Error Occured: {e}")
-
-    # Add play/end/soon command handling for owner
-    if lowerMsg.startswith("!play") and user.id == self.owner_id:
-        await play(self, user, message)
+        
+    # Song request system commands (VIP/Owner only)
+    if lowerMsg.startswith("!req"):
+        await request_song(self, user, message)
         return
-    if lowerMsg.startswith("!end") and user.id == self.owner_id:
-        await end(self, user, message)
+    if lowerMsg.startswith("!skip"):
+        await skip_song(self, user)
         return
-    if lowerMsg.startswith("!soon") and user.id == self.owner_id:
-        await soon(self, user, message)
+    if lowerMsg.startswith("!queue") or lowerMsg.startswith("!q"):
+        await show_queue(self)
+        return
+    if lowerMsg.startswith("!clear") and (user.id == self.owner_id or user.id in self.vip_users):
+        await clear_queue(self, user)
+        return
+    if lowerMsg.startswith("!np") or lowerMsg.startswith("!nowplaying"):
+        from functions.request import now_playing
+        await now_playing(self)
+        return
+    if lowerMsg.startswith("!like"):
+        from functions.request import like_song
+        await like_song(self, user)
+        return
+    if lowerMsg.startswith("!queue"):
+        await show_queue(self)
+        return
+    if lowerMsg.startswith("!clearqueue"):
+        await clear_queue(self, user)
         return
 
   async def on_emote(self, user: User, emote_id: str,
@@ -775,7 +986,24 @@ class Bot(BaseBot):
             # Check if the function exists in the module
             if hasattr(module, command) and callable(getattr(module, command)):
               function = getattr(module, command)
-              await function(self, user_id, message)
+              
+              # Get the user object if we only have the user_id
+              user = None
+              try:
+                response = await self.highrise.get_room_users()
+                if hasattr(response, "content"):
+                  for room_user, _ in response.content:
+                    if room_user.id == user_id:
+                      user = room_user
+                      break
+              except Exception as e:
+                await self.highrise.chat(f"Error finding user: {str(e)}")
+                return
+                
+              if user:
+                await function(self, user, message)
+              else:
+                await self.highrise.chat(f"Could not find user in room.")
               return  # Exit the loop if a matching function is found
           except Exception as e:
             await self.highrise.chat(
@@ -799,9 +1027,49 @@ class Bot(BaseBot):
         self.tip_data[sender.id]['total_tips'] += tip.amount
         self.write_tip_data(sender, tip.amount)
 
-        if tip.amount >= 100:
+        # Check for Host purchase (exactly 1000g)
+        if tip.amount == 1000:
+          if sender.username not in host_users:
+            host_users.append(sender.username)
+            await self.highrise.chat(
+                f"🎉 Congratulations {sender.username}! You are now a Host!"
+            )
+            await self.highrise.chat("Host Benefits unlocked:")
+            await self.highrise.chat("• Request songs with !req <song> <artist>")
+            await self.highrise.chat("• Access to teleportation commands")
+            await self.highrise.chat("• Protection from emote loops/stops")
+            await self.highrise.chat("• Host-level privileges")
+            # Teleport to special host area
+            await self.highrise.teleport(user_id=sender.id,
+                                         dest=Position(float(15), float(9.1),
+                                                       float(16)))
+          else:
+            await self.highrise.chat(
+                f"Thanks for the 1000g tip {sender.username}! You're already a Host 👑"
+            )
+        # Check for VIP purchase (exactly 500g)
+        elif tip.amount == 500:
+          if sender.username not in vip_users:
+            vip_users.append(sender.username)
+            await self.highrise.chat(
+                f"🎉 Congratulations {sender.username}! You are now a VIP!"
+            )
+            await self.highrise.chat("VIP Benefits unlocked:")
+            await self.highrise.chat("• Request songs with !req <song> <artist>")
+            await self.highrise.chat("• Access to teleportation commands") 
+            await self.highrise.chat("• Other exclusive VIP features")
+            # Teleport to VIP area
+            await self.highrise.teleport(user_id=sender.id,
+                                         dest=Position(float(15), float(9.1),
+                                                       float(12)))
+          else:
+            await self.highrise.chat(
+                f"Thanks for the 500g tip {sender.username}! You're already a VIP 💎"
+            )
+
+        elif tip.amount >= 100:
           await self.highrise.chat(
-              f"{sender.username} Tipped  {tip.amount} for VIP. Teleporting now..."
+              f"{sender.username} Tipped {tip.amount}g! Thank you for your support 💖"
           )
           #teleports the user to the specified coordinate
           await self.highrise.teleport(user_id=sender.id,
@@ -811,28 +1079,27 @@ class Bot(BaseBot):
   async def on_user_join(self, user: User,
                          position: Position | AnchorPosition) -> None:
     if user.username == "coolbuoy":
-      await self.highrise.react("wave", user.id)
+      await self.highrise.react("wink", user.id)
       await self.highrise.chat(
-        f"Welcome boss! The coolestkid reporting here..... I am your special bot made by you. We have gathered here today to play what? BINGO!!!!!!!!!!!!!")
+        f"Welcome home boss... I hope you had a great day! 😎")
     
     
-    elif user.username == "User_taken2":
-      await self.highrise.react("wave", user.id)
+    elif user.username == "Genz08":
+      await self.highrise.react("heart", user.id)
       await self.highrise.chat(
         f"Wow! It's the beauty's arrival! I'm jealous, Coolbuoy. Welcome, Beauty!")
+    
+    
+    elif user.username == "pricesschichi":
+      await self.highrise.react("wave", user.id)
+      await self.highrise.chat(
+        f"Welcome kiddo! Hope you are good?")
       
     # Else - regular welcome
     else:
        await self.highrise.react("wave", user.id)
-       
-       # Change welcome message based on game state
-       if is_game_active():
-           await self.highrise.chat(
-            f"Welcome {user.username}! The Bingo game has already started downstairs. Please follow the arrow to join in!"
-           )
-       else:
-           await self.highrise.chat(
-            f"Hiiii, welcome {user.username}, Please follow the arrow to the spike that will take you down to the game..."
+       await self.highrise.chat(
+            f"Hiiii {user.username}, welcome to Gbenzome! Free Tips ! Chills and meet friends"
            )
 
   async def on_user_leave(self, user: User) -> None:
@@ -847,8 +1114,47 @@ class Bot(BaseBot):
       await self.place_bot()
     self.bot_status = True
     
-    await self.highrise.chat("What a good day be ACTIVE! haha 🤣")
+    await self.highrise.chat("Home, Sweet Home!")
+    # Welcome message with emote system announcement
+    await self.highrise.chat("📢 The emote system has been updated! Try using numbered emotes with !emo 1, !emo 2, etc.")
+    await self.highrise.chat("Type !numbers to see all available emote shortcuts")
     print("started...")
+    
+    # Initialize emote catalog
+    if EMOTE_CATALOG_AVAILABLE:
+        try:
+            from functions.emote_catalog import load_emote_catalog, use_manual_emotes_catalog, fetch_emote_catalog
+            from functions.numbered_emotes import initialize_numbered_emotes
+            
+            # Try to load from file first (faster)
+            print("Loading emote catalog from cache...")
+            if load_emote_catalog():
+                print("Loaded emote catalog from cache successfully")
+            else:
+                # If loading fails, use manual catalog first so numbered emotes can initialize
+                print("Cache not found, using manual catalog...")
+                use_manual_emotes_catalog()
+                
+                # Then try to fetch from API
+                print("Fetching emote catalog on startup...")
+                await self.highrise.chat("📚 Initializing emote catalog...")
+                
+                # Fetch from API
+                success = await fetch_emote_catalog(self)
+                
+                if success:
+                    print("Emote catalog fetched successfully from API")
+                    # Don't chat this to avoid spam
+                else:
+                    print("Failed to fetch emote catalog, using manual catalog")
+            
+            # Initialize numbered emotes after catalog is ready
+            initialize_numbered_emotes()
+            print("Numbered emotes initialized successfully")
+        except Exception as e:
+            print(f"Error initializing emote catalog: {e}")
+    else:
+        print("Emote catalog functionality not available.")
 
   # Return the top 10 tippers
   def get_top_tippers(self):
@@ -962,10 +1268,10 @@ data_file("./data.json", DEFAULT_DATA)
 # This is recommended for local development and debugging.
 
 # Uncomment below to enable direct execution:
-if __name__ == "__main__":
-  import os
-  from dotenv import load_dotenv
-  load_dotenv()
-  ROOM_ID = os.getenv("ROOM_ID")
-  API_KEY = os.getenv("BOT_TOKEN")
-  arun(Bot().run_bot(ROOM_ID, API_KEY))
+# if __name__ == "__main__":
+#   import os
+#   from dotenv import load_dotenv
+#   load_dotenv()
+#   ROOM_ID = os.getenv("ROOM_ID")
+#   API_KEY = os.getenv("BOT_TOKEN")
+#   arun(Bot().run_bot(ROOM_ID, API_KEY))

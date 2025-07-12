@@ -2015,7 +2015,7 @@ def getCommands(comm):
         return alem
     
     elif comm.startswith("help"):
-        return f"\n\n Enter any of the following, \n\n 👉  commands - For General Commands to use \n\n 👉  bot commands - for bots commands, only the room owner can access this \n\n\n 🆘 Kindly reach out to @coolbouy If you are experiencing any issue with the bot. 07040162817"
+        return f"\n\n Enter any of the following, \n\n 👉  commands - For General Commands to use \n\n 👉  bot commands - for bots commands, only the room owner can access this \n\n 👉  emote help - for help with emotes and how to use them \n\n\n 🆘 Kindly reach out to @coolbouy If you are experiencing any issue with the bot. 07040162817"
     
     elif comm.startswith("bot commands"):
         bcom = 'Bot Commands 📳: Kindly note that only the owner of the bot can perform the following commands and you can perform them only in the room: \n'
@@ -2028,6 +2028,48 @@ def getCommands(comm):
         for i in emoteshelp:
             msgemo += f" '{i}' "
         return msgemo
+            
+    elif comm.startswith("emote help"):
+        return """📋 **Emote Command Guide** 📋
+        
+🔹 RECOMMENDED - Use Numbers (Always Works):
+   !emo <number> - Use an emote by its number (1-30)
+   !numbers - See all available numbered emotes
+   !numbers <page> - View different pages (e.g., !numbers 2)
+   
+   Example: Type "!emo 1" for wave, "!emo 2" for yes, etc.
+   
+🔹 Basic Usage:
+   !emo <name> - Try to use an emote by name (e.g., !emo wave)
+   Note: Some emotes are premium and can't be used by the bot
 
-# print(getCommands('evemo'))
+🔹 Find Emotes:
+   !emotes free - See only free emotes (recommended)
+   !emotes - See all emotes in catalog
+   !emotes search <term> - Search for emotes by name
+   
+🔹 Loop Emotes:
+   !loop <emote> - Loop an emote on yourself
+   !loop <emote> <username> - Loop an emote on someone else
+   !stop - Stop your looping emote
+   
+💡 Tip: You can use just the last part of an emote name
+   Example: !emo cast instead of !emo fishing-cast"""
+   
+    elif comm.startswith("!numbers"):
+        return """🔢 **Numbered Emote Shortcuts** 🔢
+        
+Use numbers 1-30 as shortcuts for your favorite emotes!
+
+🔹 Usage:
+   !numbers - View all numbered emote shortcuts
+   !numbers <page> - View specific page of shortcuts
+   !emo <number> - Perform the emote by its number
+
+🔹 Example:
+   !emo 1 - Performs the "kiss" emote
+   !emo 7 - Performs the "bow" emote
+   
+Popular emotes are assigned to numbers for quick access.
+Try them out!"""
 

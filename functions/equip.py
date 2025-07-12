@@ -77,7 +77,6 @@ async def equip(self: BaseBot, user: User, message: str):
   for outfit_item in outfit:
     #the category of the item in an outfit can be found by the first string in the id before the "-" character
     item_category = outfit_item.id.split("-")[0][0:4]
-    print(f"{item_category}")
     if item_category == category[0:4]:
       items_to_remove.append(outfit_item)
   for item_to_remove in items_to_remove:
