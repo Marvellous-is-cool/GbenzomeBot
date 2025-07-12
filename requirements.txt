@@ -19,7 +19,7 @@ jinja2
 markupsafe 
 multidict 
 pendulum
-pydantic
+pydantic==1.10.14
 python-dateutil 
 python-dotenv 
 pytzdata 
