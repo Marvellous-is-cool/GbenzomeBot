@@ -186,32 +186,25 @@ class Bot(BaseBot):
       await self.highrise.chat(f"Here are the vips: \n {vipsinstr} ")
 
     if lowerMsg.startswith("!addvip"):
-      if user.username != "coolbuoy" or user.username.lower() != "lil_miss_ammy":
-        await self.highrise.chat("You do not have permission to do this")
-        return
-      #separete message into parts
+      is_privileged = (
+          user.id == self.owner_id or
+          user.username.lower() == "coolbuoy" or
+          user.username in vip_users or
+          user.username in host_users
+      )
+      if not is_privileged:
+          await self.highrise.chat("You do not have permission to do this")
+          return
       parts = message.split()
-      #check if message is valid "kick @username"
       if len(parts) != 2:
-        await self.highrise.chat(
-            "Invalid add vip command format. use !addvip <username>")
-        return
-      #checks if there's a @ in the message
-      if "@" not in parts[1]:
-        username = parts[1]
-      else:
-        username = parts[1][1:]
-      #add user to vip
-      try:
-        vip_users.append(username)
-        await self.highrise.chat(
-            f"{username} has been added to one of the vips")
-      except Exception as e:
-        await self.highrise.chat(f"{e}")
-        return
-        #send message to chat
-        await self.highrise.chat(
-            f"{username} has been added to one of the vips")
+          await self.highrise.chat("Invalid add vip command format. use !addvip <username>")
+          return
+      username = parts[1].lstrip("@").strip()
+      if username in vip_users:
+          await self.highrise.chat(f"{username} is already a VIP.")
+          return
+      vip_users.append(username)
+      await self.highrise.chat(f"{username} has been added to the VIPs")
 
     if lowerMsg.startswith("!hosts"):
       hostsinstr = ''
@@ -222,58 +215,37 @@ class Bot(BaseBot):
       await self.highrise.chat(f"Here are the hosts: \n {hostsinstr} ")
 
     if lowerMsg.startswith("!addhost"):
-      if user.username != "coolbuoy" or user.username.lower() != "lil_miss_ammy":
-        await self.highrise.chat("You do not have permission to do this")
-        return
-      #separete message into parts
+      is_privileged = user.username.lower() in ["coolbuoy", "lil_miss_ammy"]
+      if not is_privileged:
+          await self.highrise.chat("You do not have permission to do this")
+          return
       parts = message.split()
-      #check if message is valid "!addhost username"
       if len(parts) != 2:
-        await self.highrise.chat(
-            "Invalid add host command format. use !addhost <username>")
-        return
-      #checks if there's a @ in the message
-      if "@" not in parts[1]:
-        username = parts[1]
-      else:
-        username = parts[1][1:]
-      #add user to hosts
-      try:
-        host_users.append(username)
-        await self.highrise.chat(
-            f"{username} has been added to one of the hosts")
-      except Exception as e:
-        await self.highrise.chat(f"{e}")
-        return
+          await self.highrise.chat("Invalid add host command format. use !addhost <username>")
+          return
+      username = parts[1].lstrip("@").strip()
+      if username in host_users:
+          await self.highrise.chat(f"{username} is already a Host.")
+          return
+      host_users.append(username)
+      await self.highrise.chat(f"{username} has been added to the Hosts")
 
     if lowerMsg.startswith("!removehost"):
-      if user.username != "coolbuoy" or user.username.lower() != "lil_miss_ammy":
-        await self.highrise.chat("You do not have permission to do this")
-        return
-      #separete message into parts
+      is_privileged = user.username.lower() in ["coolbuoy", "lil_miss_ammy"]
+      if not is_privileged:
+          await self.highrise.chat("You do not have permission to do this")
+          return
       parts = message.split()
-      #check if message is valid "!removehost username"
       if len(parts) != 2:
-        await self.highrise.chat(
-            "Invalid remove host command format. use !removehost <username>")
-        return
-      #checks if there's a @ in the message
-      if "@" not in parts[1]:
-        username = parts[1]
-      else:
-        username = parts[1][1:]
-      #remove user from hosts
-      try:
-        if username in host_users:
+          await self.highrise.chat("Invalid remove host command format. use !removehost <username>")
+          return
+      username = parts[1].lstrip("@").strip()
+      if username in host_users:
           host_users.remove(username)
-          await self.highrise.chat(
-              f"{username} has been removed from hosts")
-        else:
-          await self.highrise.chat(f"{username} is not a host")
-      except Exception as e:
-        await self.highrise.chat(f"{e}")
-        return
-
+          await self.highrise.chat(f"{username} has been removed from Hosts")
+      else:
+          await self.highrise.chat(f"{username} is not a Host")
+    
     # Buy VIP command - users can pay 500g to become VIP
     if lowerMsg.startswith("!buyvip"):
         # Check if user is already VIP
