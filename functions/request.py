@@ -2,8 +2,7 @@
 
 from highrise import BaseBot
 from highrise.models import User
-import asyncio, time, json, os, threading, yt_dlp, sounddevice as sd
-import soundfile as sf
+import asyncio, time, json, os, threading, yt_dlp
 
 # 🗃️ Persistence
 SONGS_FILE = 'song_data.json'
@@ -33,23 +32,12 @@ def load_song_data():
 
 load_song_data()
 
-# 🎧 Helper: stream audio to virtual mic (BlackHole)
-def play_file(path):
-    data, fs = sf.read(path, dtype='float32')
-    sd.default.device = 'BlackHole 2ch'
-    sd.play(data, fs)
-    sd.wait()
 
-# Async wrapper
+
+
 async def stream_and_wait(self, path):
     global current_song
-    t = threading.Thread(target=play_file, args=(path,), daemon=True)
-    t.start()
-    # load duration via soundfile
-    with sf.SoundFile(path) as f:
-        duration = len(f) / f.samplerate
-    await asyncio.sleep(duration)
-    await self.highrise.chat(f"✅ Finished playing '{current_song['name']}'")
+    await self.highrise.chat("Audio playback is not supported on this deployment.")
     current_song = None
     await process_song_queue(self)
 

@@ -30,5 +30,3 @@ uvicorn
 werkzeug 
 yarl 
 yt-dlp
-sounddevice
-soundfile
