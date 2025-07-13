@@ -25,3 +25,4 @@ yarl
 setuptools
 yt_dlp
 sounddevice
+PortAudio
