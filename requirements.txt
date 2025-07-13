@@ -24,3 +24,4 @@ werkzeug
 yarl 
 setuptools
 yt_dlp
+sounddevice
