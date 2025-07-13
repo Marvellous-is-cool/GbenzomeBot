@@ -26,3 +26,5 @@ six
 typing-extensions 
 werkzeug 
 yarl 
+setuptools
+pendulum==2.1.2
