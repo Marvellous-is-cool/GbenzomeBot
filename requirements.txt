@@ -3,11 +3,9 @@ aiosignal
 async-timeout
 attrs
 blinker
-cattrs
 charset-normalizer
 click
 colorama
-
 exceptiongroup
 flask
 frozenlist
@@ -17,8 +15,7 @@ idna
 itsdangerous 
 jinja2 
 markupsafe 
-multidict 
-python-dateutil 
+multidict
 python-dotenv 
 pytzdata
 six
