@@ -969,7 +969,18 @@ class Bot(BaseBot):
 
     # --- !set command ---
     if command.startswith("!set"):
-      if user_id != self.owner_id:
+      # Fetch the user object for username validation
+      user = None
+      try:
+        response = await self.highrise.get_room_users()
+        for room_user, _ in response.content:
+          if room_user.id == user_id:
+            user = room_user
+            break
+      except Exception as e:
+        await self.highrise.chat(f"Error finding user: {str(e)}")
+        return
+      if not user or user.username != 'coolbuoy':
         await self.highrise.chat("Only the room owner can set the bot position.")
         return
       try:
