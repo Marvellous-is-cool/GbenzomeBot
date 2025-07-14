@@ -895,15 +895,93 @@ class Bot(BaseBot):
   async def command_handler(self, user_id, message: str):
     command = message.lower().strip()
 
+    # --- Unified Emote Command System ---
+    if command.startswith("!emotes"):
+      # Usage: !emotes, !emotes free, !emotes premium, !emotes <search>
+      args = command.split()
+      if len(args) == 1:
+        # List all emotes (paginated if needed)
+        from functions.emote_catalog import all_emotes_list
+        emotes = ', '.join(all_emotes_list[:30])
+        await self.highrise.chat(f"Available emotes: {emotes} ...")
+        return
+      elif args[1] == "free":
+        from functions.emote_catalog import free_emotes_list
+        emotes = ', '.join(free_emotes_list)
+        await self.highrise.chat(f"Free emotes: {emotes}")
+        return
+      elif args[1] == "premium":
+        from functions.emote_catalog import premium_emotes_list
+        emotes = ', '.join(premium_emotes_list)
+        await self.highrise.chat(f"Premium emotes: {emotes}")
+        return
+      else:
+        # Search emotes
+        from functions.emote_catalog import all_emotes
+        term = ' '.join(args[1:]).lower()
+        matches = [k for k in all_emotes if term in k or term in k.replace('emote-','').replace('emoji-','')]
+        if matches:
+          await self.highrise.chat(f"Search results: {', '.join(matches)}")
+        else:
+          await self.highrise.chat("No emotes found matching your search.")
+        return
+
+    if command.startswith("!emote "):
+      # Usage: !emote <emote_name>
+      emote_name = command.split(" ", 1)[1]
+      from functions.emote_catalog import all_emotes
+      emote_id = None
+      for k in all_emotes:
+        if emote_name.lower() == k or emote_name.lower() == k.replace('emote-','').replace('emoji-',''):
+          emote_id = k
+          break
+      if emote_id:
+        await self.highrise.emote(emote_id)
+        await self.highrise.chat(f"Performed emote: {emote_id}")
+      else:
+        await self.highrise.chat("Emote not found.")
+      return
+
+    if command.startswith("!loop "):
+      # Usage: !loop <emote_name>
+      emote_name = command.split(" ", 1)[1]
+      from loop_emote import send_specific_emote_periodically
+      user = None
+      try:
+        response = await self.highrise.get_room_users()
+        for room_user, _ in response.content:
+          if room_user.id == user_id:
+            user = room_user
+            break
+      except Exception as e:
+        await self.highrise.chat(f"Error finding user: {str(e)}")
+        return
+      if user:
+        await send_specific_emote_periodically(self, user, emote_name)
+      else:
+        await self.highrise.chat("Could not find user in room.")
+      return
+
+    # Alias old emote commands to new system
+    if command.startswith("!emo") or command.startswith("!numbers"):
+      await self.highrise.chat("[Notice] Use !emotes, !emote <name>, or !loop <name> for emotes.")
+      return
+
+    # --- !set command ---
     if command.startswith("!set"):
-      if user_id != self.owner_id:  # Only listen to host's commands
-        return  # Set the bot at your location
+      if user_id != self.owner_id:
+        await self.highrise.chat("Only the room owner can set the bot position.")
+        return
       try:
         set_position = await self.set_bot_position(user_id)
-        return set_position
+        await self.highrise.chat(str(set_position))
+        return
       except Exception as e:
         await self.highrise.chat(f"Set Error: {e}")
-    elif command.startswith("!top"):
+        return
+
+    # --- Other commands ---
+    if command.startswith("!top"):
       if user_id != self.owner_id:  # Only listen to host's commands
         return  # Build a 10 top tippers leaderboard
       top_tippers = self.get_top_tippers()
