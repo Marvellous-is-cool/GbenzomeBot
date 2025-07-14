@@ -893,63 +893,6 @@ class Bot(BaseBot):
 
   # Handle commands from any source (chat/whisper/message)
   async def command_handler(self, user_id, message: str):
-    # --- VIP Question Session ---
-    if command.startswith("!ques"):
-      # Fetch user object for username
-      user = None
-      try:
-        response = await self.highrise.get_room_users()
-        for room_user, _ in response.content:
-          if room_user.id == user_id:
-            user = room_user
-            break
-      except Exception as e:
-        await self.highrise.chat(f"Error finding user: {str(e)}")
-        return
-      if not user or user.username not in self.vip_users:
-        await self.highrise.chat("Only VIPs can access the question session.")
-        return
-      from functions.questions import start_session, stop_session, get_question, get_all_questions
-      args = command.split()
-      if len(args) == 2 and args[1] == "start":
-        start_session(user.username)
-        await self.highrise.chat(f"@{user.username}, your question session has started! Use !ques <num> or !ques random.")
-        return
-      if len(args) == 2 and args[1] == "stop":
-        stop_session(user.username)
-        await self.highrise.chat(f"@{user.username}, your question session has ended.")
-        return
-      if len(args) == 2 and args[1] == "random":
-        q, err = get_question(user.username, random_pick=True)
-        if q:
-          await self.highrise.chat(f"Question: {q}")
-        else:
-          await self.highrise.chat(err)
-        return
-      if len(args) == 2 and args[1].isdigit():
-        num = int(args[1])
-        q, err = get_question(user.username, num=num)
-        if q:
-          await self.highrise.chat(f"Question: {q}")
-        else:
-          await self.highrise.chat(err)
-        return
-      if len(args) == 2 and args[1] == "all":
-        # Only via DM/whisper
-        await self.highrise.chat("DM the bot to receive all 500 questions.")
-        return
-      await self.highrise.chat("Usage: !ques start | !ques stop | !ques <num> | !ques random | !ques all (DM only)")
-      return
-    # VIPs can DM the bot for all questions
-    if message.lower().strip() == "!ques all" and user.username in self.vip_users:
-      from functions.questions import get_all_questions
-      questions = get_all_questions()
-      # Send in chunks to avoid message limits
-      chunk = 10
-      for i in range(0, len(questions), chunk):
-        qlist = '\n'.join(f"{j+1}. {questions[j]}" for j in range(i, min(i+chunk, len(questions))))
-        await self.highrise.send_whisper(user.id, qlist)
-      return
     command = message.lower().strip()
 
     # --- Unified Emote Command System ---
