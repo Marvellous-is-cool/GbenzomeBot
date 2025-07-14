@@ -1,3 +1,4 @@
+from functions.questions import start_session, stop_session, get_question, get_all_questions
 from highrise import BaseBot, __main__, CurrencyItem, Item, Position, AnchorPosition, SessionMetadata, User
 from highrise.__main__ import BotDefinition
 from asyncio import run as arun
@@ -130,6 +131,7 @@ commds = [
 
 
 class Bot(BaseBot):
+    # ...existing code...
 
   def __init__(self):
     super().__init__()
@@ -893,6 +895,55 @@ class Bot(BaseBot):
 
   # Handle commands from any source (chat/whisper/message)
   async def command_handler(self, user_id, message: str):
+    # --- VIP Question Session: !ask ---
+    if message.lower().startswith("!ask"):
+      # Only VIPs can use !ask
+      user = None
+      try:
+        response = await self.highrise.get_room_users()
+        for room_user, _ in response.content:
+          if room_user.id == user_id:
+            user = room_user
+            break
+      except Exception as e:
+        await self.highrise.chat(f"Error finding user: {str(e)}")
+        return
+      if not user or user.username not in self.vip_users:
+        await self.highrise.chat("This command is for VIPs only.")
+        return
+      args = message.strip().split()
+      if len(args) == 1 or args[1] == "help":
+        await self.highrise.chat("[VIP] !ask usage: !ask start | !ask stop | !ask <number> | !ask random | !ask help\n- !ask start: Start a question session.\n- !ask stop: End your session.\n- !ask <number>: Get a specific question.\n- !ask random: Get a random question.\n- !ask help: Show this help message.")
+        return
+      subcmd = args[1].lower()
+      if subcmd == "start":
+        start_session(user.username)
+        await self.highrise.chat(f"[VIP] {user.username}, your question session has started! Use !ask <number> or !ask random.")
+        return
+      elif subcmd == "stop":
+        stop_session(user.username)
+        await self.highrise.chat(f"[VIP] {user.username}, your question session has ended.")
+        return
+      elif subcmd == "random":
+        q, err = get_question(user.username, random_pick=True)
+        if q:
+          await self.highrise.chat(f"[VIP] {user.username}, here is your question:\n{q}")
+        else:
+          await self.highrise.chat(f"[VIP] {user.username}, {err}")
+        return
+      else:
+        # Try to parse as a number
+        try:
+          num = int(subcmd)
+        except ValueError:
+          await self.highrise.chat("[VIP] Invalid usage. Use !ask help for options.")
+          return
+        q, err = get_question(user.username, num=num)
+        if q:
+          await self.highrise.chat(f"[VIP] {user.username}, here is question #{num}:\n{q}")
+        else:
+          await self.highrise.chat(f"[VIP] {user.username}, {err}")
+        return
     command = message.lower().strip()
 
     # --- Unified Emote Command System ---
